@@ -1,0 +1,229 @@
+/* AI-часик — стиль сайта.
+   Главный элемент — циферблат часа: на нём видно, на какой минуте шла каждая тема.
+   Всё остальное спокойное: бумага, графит, кобальтовые ссылки, жёлтые таймкоды. */
+
+:root {
+  --paper: #EFF3F0;
+  --sheet: #FFFFFF;
+  --ink: #1D2A2F;
+  --muted: #56676C;
+  --rule: #CFD9D3;
+  --cobalt: #2346B4;
+  --cobalt-deep: #18328A;
+  --signal: #F2B90C;
+  --signal-soft: #FFEFB8;
+
+  --display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --text: "Golos Text", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --step--1: 0.875rem;
+  --step-0: 1.0625rem;
+  --step-1: 1.25rem;
+  --step-2: 1.5rem;
+  --step-3: 2rem;
+  --step-4: clamp(2rem, 1.2rem + 3.6vw, 3.25rem);
+
+  --measure: 40rem;
+  --wide: 68rem;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--text);
+  font-size: var(--step-0);
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+
+a { color: var(--cobalt); text-underline-offset: 0.18em; text-decoration-thickness: 1px; }
+a:hover { color: var(--cobalt-deep); text-decoration-thickness: 2px; }
+:focus-visible { outline: 3px solid var(--cobalt); outline-offset: 3px; border-radius: 4px; }
+
+h1, h2, h3 { font-family: var(--display); font-weight: 600; line-height: 1.15; margin: 0; letter-spacing: -0.01em; }
+h1 { font-size: var(--step-4); }
+h2 { font-size: var(--step-2); margin-bottom: 1.25rem; }
+h3 { font-size: var(--step-0); font-family: var(--text); font-weight: 600; letter-spacing: 0; line-height: 1.35; }
+p { margin: 0 0 0.9em; }
+
+.wrap { max-width: var(--wide); margin: 0 auto; padding: 0 1.25rem; }
+.measure { max-width: var(--measure); }
+
+/* Шапка */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: 1.1rem; padding-bottom: 1.1rem; }
+.brand { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--display); font-weight: 600; font-size: 1.05rem; color: var(--ink); text-decoration: none; }
+.brand:hover { color: var(--ink); }
+.brand svg { width: 30px; height: 30px; }
+.nav { display: flex; gap: 1.25rem; font-size: var(--step--1); }
+.nav a { color: var(--ink); text-decoration: none; padding: 0.25rem 0; border-bottom: 2px solid transparent; }
+.nav a:hover, .nav a[aria-current="page"] { border-bottom-color: var(--signal); }
+
+/* Главная */
+.hero { padding: 3rem 0 2rem; }
+.hero h1 { max-width: 14ch; }
+.hero .lead { font-size: var(--step-1); line-height: 1.45; max-width: 34rem; margin-top: 1.25rem; }
+.hero .host { color: var(--muted); margin-top: 1rem; }
+.hero-dial { width: 210px; }
+
+.search { margin: 0.5rem 0 3rem; max-width: var(--measure); }
+.search label { display: block; font-weight: 600; margin-bottom: 0.5rem; }
+.search input {
+  width: 100%; font: inherit; font-size: var(--step-1); padding: 0.85rem 1rem;
+  border: 2px solid var(--ink); border-radius: 10px; background: var(--sheet); color: var(--ink);
+}
+.search input::placeholder { color: #8A989B; }
+.search input:focus-visible { outline: none; border-color: var(--cobalt); box-shadow: 0 0 0 3px rgba(35, 70, 180, 0.25); }
+.search .hint { color: var(--muted); font-size: var(--step--1); margin-top: 0.5rem; }
+
+.results { list-style: none; margin: 1rem 0 0; padding: 0; }
+.results li { padding: 0.85rem 0; border-top: 1px solid var(--rule); }
+.results .kind { color: var(--muted); font-size: var(--step--1); }
+.results .r-title { font-weight: 600; }
+.results .r-text { margin: 0.2rem 0 0.4rem; }
+.results .empty { color: var(--muted); border-top: 0; }
+mark { background: var(--signal-soft); color: inherit; padding: 0 0.1em; border-radius: 2px; }
+
+.list-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; border-top: 2px solid var(--ink); padding-top: 1rem; margin-bottom: 0.5rem; }
+.list-head h2 { margin: 0; }
+.list-head span { color: var(--muted); font-size: var(--step--1); }
+
+.chasiki { list-style: none; margin: 0 0 4rem; padding: 0; }
+.chasik-row { display: grid; grid-template-columns: 112px minmax(0, 1fr); gap: 1.5rem; padding: 1.5rem 0; border-bottom: 1px solid var(--rule); }
+.chasik-row .mini { width: 112px; }
+.chasik-row .when { color: var(--muted); font-size: var(--step--1); }
+.chasik-row h3 { font-family: var(--display); font-size: var(--step-1); margin: 0.3rem 0 0.5rem; }
+.chasik-row h3 a { color: var(--ink); text-decoration: none; }
+.chasik-row h3 a:hover { color: var(--cobalt); }
+.chasik-row p { max-width: 36rem; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.4rem; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 0.5rem; font: inherit; font-weight: 600; font-size: var(--step--1);
+  padding: 0.6rem 1rem; border-radius: 999px; text-decoration: none; border: 2px solid var(--ink); color: var(--ink); background: transparent; cursor: pointer;
+}
+.btn:hover { background: var(--ink); color: var(--paper); }
+.btn.primary { background: var(--ink); color: var(--paper); }
+.btn.primary:hover { background: var(--cobalt-deep); border-color: var(--cobalt-deep); color: #fff; }
+.btn svg { width: 14px; height: 14px; }
+
+/* Таймкод: всегда ведёт в нужный момент записи */
+.tc {
+  display: inline-flex; align-items: center; gap: 0.3rem; font-size: var(--step--1); font-weight: 600;
+  background: var(--signal-soft); color: var(--ink); text-decoration: none; padding: 0.1rem 0.55rem 0.1rem 0.45rem;
+  border-radius: 999px; white-space: nowrap; vertical-align: 0.08em;
+}
+.tc::before { content: ""; width: 0; height: 0; border-left: 6px solid currentColor; border-top: 4px solid transparent; border-bottom: 4px solid transparent; }
+.tc:hover { background: var(--signal); color: var(--ink); }
+
+/* Страница часика */
+.back { display: inline-block; margin: 1.5rem 0 0; font-size: var(--step--1); color: var(--ink); }
+.page-head { padding: 1.5rem 0 2.5rem; }
+.page-head .num { font-family: var(--display); font-size: var(--step-1); color: var(--cobalt); margin-bottom: 0.75rem; }
+.page-head h1 { max-width: 20ch; font-size: clamp(1.75rem, 1.1rem + 3vw, 2.75rem); }
+.page-head .meta { color: var(--muted); margin: 1rem 0 1.25rem; }
+.page-head .note { color: var(--muted); font-size: var(--step--1); margin-top: 0.75rem; }
+
+.block { border-top: 2px solid var(--ink); padding: 1.25rem 0 2.5rem; }
+.block > h2 { font-size: var(--step-1); }
+.summary p { font-size: var(--step-1); line-height: 1.5; }
+
+.topics-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 3rem; align-items: start; }
+.topics-grid .dial-wrap { position: sticky; top: 1.5rem; }
+.topics { list-style: none; margin: 0; padding: 0; counter-reset: topic; }
+.topics li { display: grid; grid-template-columns: 2rem minmax(0, 1fr); gap: 0.25rem 0.75rem; padding: 0.8rem 0; border-bottom: 1px solid var(--rule); }
+.topics li:first-child { padding-top: 0; }
+.topics .n {
+  grid-row: span 2; width: 1.75rem; height: 1.75rem; border-radius: 50%; background: var(--sheet); border: 2px solid var(--ink);
+  display: grid; place-items: center; font-size: 0.8rem; font-weight: 600; margin-top: 0.05rem;
+}
+.topics li.is-hot .n { background: var(--signal); }
+.topics .t-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; }
+.topics .t-text { margin: 0.15rem 0 0; color: var(--ink); }
+
+.dial-caption { color: var(--muted); font-size: var(--step--1); margin-top: 0.75rem; text-align: center; }
+
+.tips { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.tips li { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.tips li:first-child { padding-top: 0; }
+.tips h3 { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.6rem; margin-bottom: 0.3rem; }
+.tips p { margin: 0; }
+
+.prompt { margin-top: 0.75rem; background: var(--sheet); border: 1px solid var(--rule); border-left: 4px solid var(--cobalt); border-radius: 6px; padding: 0.85rem 1rem; }
+.prompt blockquote { margin: 0 0 0.6rem; font-size: var(--step--1); line-height: 1.5; }
+.copy { font: inherit; font-size: var(--step--1); font-weight: 600; color: var(--cobalt); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 0.18em; }
+.copy:hover { color: var(--cobalt-deep); }
+
+.qa { margin: 0; }
+.qa > div { padding: 1rem 0; border-bottom: 1px solid var(--rule); }
+.qa > div:first-child { padding-top: 0; }
+.qa dt { font-weight: 600; margin-bottom: 0.3rem; }
+.qa dd { margin: 0; }
+.qa .tc { margin-left: 0.4rem; }
+
+.try { margin: 0; padding-left: 1.25rem; }
+.try li { margin-bottom: 0.6rem; padding-left: 0.25rem; }
+
+.terms { display: flex; flex-wrap: wrap; gap: 0.5rem; list-style: none; margin: 0; padding: 0; }
+.terms a { display: inline-block; padding: 0.35rem 0.75rem; border: 1px solid var(--ink); border-radius: 999px; color: var(--ink); text-decoration: none; font-size: var(--step--1); }
+.terms a:hover { background: var(--ink); color: var(--paper); }
+.terms-more { margin-top: 1rem; font-size: var(--step--1); }
+
+/* Указатель */
+.index-head { padding: 2rem 0 0.5rem; }
+.index-head p { max-width: var(--measure); margin-top: 1rem; font-size: var(--step-1); }
+.letters { display: flex; flex-wrap: wrap; gap: 0.25rem 0.75rem; margin: 0 0 1.5rem; font-family: var(--display); }
+.letters a { text-decoration: none; }
+.entries { margin: 0; }
+.entry { display: grid; grid-template-columns: minmax(10rem, 14rem) minmax(0, 1fr); gap: 0.25rem 1.5rem; padding: 0.9rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 1rem; }
+.entry dt { font-weight: 600; }
+.entry dd { margin: 0; }
+.entry .where { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.35rem; font-size: var(--step--1); }
+.entry .where a.page { color: var(--muted); }
+.entry:target { background: var(--signal-soft); box-shadow: -0.75rem 0 0 var(--signal-soft), 0.75rem 0 0 var(--signal-soft); }
+.letter { font-family: var(--display); font-size: var(--step-1); color: var(--cobalt); padding-top: 1.25rem; }
+
+/* Подвал */
+.foot { border-top: 1px solid var(--rule); padding-top: 1.5rem; padding-bottom: 2.5rem; color: var(--muted); font-size: var(--step--1); margin-top: 2rem; }
+.foot p { margin: 0 0 0.3rem; }
+
+/* Циферблат */
+.dial { display: block; width: 100%; height: auto; overflow: visible; }
+.dial .face { fill: var(--sheet); stroke: var(--rule); stroke-width: 1.5; }
+.dial .tick { stroke: var(--rule); stroke-width: 1; }
+.dial .tick.five { stroke: var(--muted); stroke-width: 1.6; }
+.dial .run { fill: none; stroke: var(--cobalt); stroke-width: 5; stroke-linecap: round; }
+.dial .dot { fill: var(--signal); stroke: var(--ink); stroke-width: 1.2; }
+.dial .mark circle { fill: var(--sheet); stroke: var(--ink); stroke-width: 1.6; transition: fill 0.15s; }
+.dial .mark text { font-family: var(--text); font-size: 9.5px; font-weight: 600; fill: var(--ink); text-anchor: middle; dominant-baseline: central; pointer-events: none; }
+.dial .mark:hover circle, .dial .mark.is-hot circle, .dial .mark:focus-visible circle { fill: var(--signal); }
+.dial .mark:focus-visible { outline: none; }
+.dial .spoke { stroke: var(--ink); stroke-width: 0.8; opacity: 0.35; }
+.dial .center-big { font-family: var(--display); font-weight: 600; fill: var(--ink); text-anchor: middle; }
+.dial .center-small { font-family: var(--text); fill: var(--muted); text-anchor: middle; }
+.dial .hour { font-family: var(--text); font-size: 8px; fill: var(--muted); text-anchor: middle; dominant-baseline: central; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .dial.animate .run { stroke-dasharray: var(--len); stroke-dashoffset: var(--len); animation: sweep 1.4s cubic-bezier(.3,.7,.2,1) 0.2s forwards; }
+  @keyframes sweep { to { stroke-dashoffset: 0; } }
+}
+
+@media (max-width: 760px) {
+  .hero { grid-template-columns: 1fr; padding-top: 1.5rem; gap: 1.5rem; }
+  .hero-dial { width: 150px; order: -1; }
+  .topics-grid { grid-template-columns: 1fr; gap: 1.5rem; }
+  .topics-grid .dial-wrap { position: static; max-width: 240px; margin: 0 auto; order: -1; }
+  .chasik-row { grid-template-columns: 72px minmax(0, 1fr); gap: 1rem; }
+  .chasik-row .mini { width: 72px; }
+  .entry { grid-template-columns: 1fr; }
+  .nav { gap: 0.9rem; }
+}
+
+@media print {
+  body { background: #fff; }
+  .search, .nav, .actions, .copy { display: none; }
+}
