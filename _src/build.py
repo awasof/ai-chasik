@@ -284,6 +284,8 @@ def page_chasik(ch, chs):
         f'<li><a href="../ukazatel/index.html#{term_id(ch, t)}">{e(t["term"])}</a></li>'
         for t in sorted(ch["terms"], key=lambda x: (0 if re.match(r"[а-яё]", x["term"].lower()) else 1, x["term"].lower().replace("ё", "е"))))
     summary = "".join(f"<p>{e(p)}</p>" for p in ch["summary"])
+    materials = (f'<a class="btn" href="{e(ch["materials"])}" target="_blank" rel="noopener noreferrer">Слайды и материалы</a>'
+                 if ch.get("materials") else "")
 
     others = sorted(chs, key=lambda c: c["n"])
     idx = [c["n"] for c in others].index(ch["n"])
@@ -303,7 +305,7 @@ def page_chasik(ch, chs):
     <div class="num">Часик {ch['n']}</div>
     <h1>{e(ch['title'])}</h1>
     <p class="meta">{e(ch['dateText'])}. Запись {ch['durationMin']} {plural(ch['durationMin'], 'минута', 'минуты', 'минут')}, читать {mins} {plural(mins, 'минуту', 'минуты', 'минут')}.</p>
-    <div class="actions">{btn_video(ch)}<a class="btn" href="{e(ch['materials'])}" target="_blank" rel="noopener noreferrer">Слайды и материалы</a></div>
+    <div class="actions">{btn_video(ch)}{materials}</div>
     <p class="note">Запись открывается в Dion — нужно войти в свой аккаунт. Жёлтое время рядом с темой открывает запись на этой минуте.</p>
   </header>
 
