@@ -223,6 +223,11 @@ mark { background: var(--signal-soft); color: inherit; padding: 0 0.1em; border-
   .nav { gap: 0.9rem; }
 }
 
+@media (max-width: 440px) {
+  .brand span { white-space: nowrap; }
+  .nav { gap: 0.75rem; font-size: 0.8rem; }
+}
+
 @media print {
   body { background: #fff; }
   .search, .nav, .actions, .copy { display: none; }

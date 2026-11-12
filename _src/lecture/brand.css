@@ -1,0 +1,174 @@
+/* Стиль курса «ИИ в исследованиях» — цвета и шаблоны слайдов. Значения из tokens.json. */
+:root {
+  --surface: #faf9f5;
+  --surface-sunk: #f0eee6;
+  --line: #e8e6dc;
+  --ink: #141413;
+  --ink-muted: #5e5d59;
+  --ink-faint: #b0aea5;
+  --clay: #d0694a;
+  --clay-text: #a04629;
+  --clay-soft: #f6e3da;
+  --on-clay: #141413;
+  --slab: #141413;
+  --on-slab: #faf9f5;
+  --on-slab-muted: #b0aea5;
+  --sky: #5689bf;
+  --sage: #728756;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+  --space-7: 64px;
+  --radius-sm: 4px;
+  --radius-md: 12px;
+  --radius-full: 9999px;
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Golos Text", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --surface: #1a1918;
+    --surface-sunk: #262523;
+    --line: #3a3936;
+    --ink: #f5f4ef;
+    --ink-muted: #b0aea5;
+    --ink-faint: #5e5d59;
+    --clay: #d97757;
+    --clay-text: #e3906f;
+    --clay-soft: #3b2419;
+    --on-clay: #141413;
+    --slab: #262523;
+    --on-slab: #faf9f5;
+    --on-slab-muted: #b0aea5;
+    --sky: #7fa9d6;
+    --sage: #93a878;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --surface: #1a1918;
+  --surface-sunk: #262523;
+  --line: #3a3936;
+  --ink: #f5f4ef;
+  --ink-muted: #b0aea5;
+  --ink-faint: #5e5d59;
+  --clay: #d97757;
+  --clay-text: #e3906f;
+  --clay-soft: #3b2419;
+  --on-clay: #141413;
+  --slab: #262523;
+  --on-slab: #faf9f5;
+  --on-slab-muted: #b0aea5;
+  --sky: #7fa9d6;
+  --sage: #93a878;
+  color-scheme: dark;
+}
+
+
+/* Слайд 960×540. Всё — из токенов; для 1920×1080 масштаб ×2. */
+html, body { margin: 0; background: var(--surface); color: var(--ink); font-family: var(--font-sans); }
+
+.sl { box-sizing: border-box; width: 960px; height: 540px; padding: var(--space-6) var(--space-7); background: var(--surface); color: var(--ink); display: flex; flex-direction: column; gap: var(--space-5); position: relative; overflow: hidden; font-family: var(--font-sans); }
+.sl *, .sl *::before, .sl *::after { box-sizing: border-box; }
+:where(.sl) :where(p, h1, h2, h3, ul, ol, dl, dd) { margin: 0; }
+
+/* верхняя строка: курс слева, неделя и часть справа */
+.sl-meta { display: flex; justify-content: space-between; gap: var(--space-4); font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.sl-label { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+
+.sl-head { display: flex; flex-direction: column; gap: var(--space-3); }
+.sl-display { font-family: var(--font-serif); font-size: 56px; line-height: 60px; font-weight: 500; letter-spacing: -.01em; text-wrap: balance; }
+.sl-title { font-family: var(--font-serif); font-size: 36px; line-height: 42px; font-weight: 500; letter-spacing: -.005em; text-wrap: balance; max-width: 760px; }
+.sl-lead { font-size: 20px; line-height: 28px; color: var(--ink-muted); max-width: 640px; text-wrap: pretty; }
+.sl-body { font-size: 16px; line-height: 24px; max-width: 640px; }
+.sl-small { font-size: 14px; line-height: 20px; }
+.sl-muted { color: var(--ink-muted); }
+.sl-code { font-family: var(--font-mono); font-size: 14px; line-height: 20px; }
+.sl-caption { font-size: 12px; line-height: 16px; color: var(--ink-muted); }
+
+/* вывод внизу слайда */
+.sl-take { margin-top: auto; padding-top: var(--space-3); border-top: 1px solid var(--line); font-family: var(--font-serif); font-size: 18px; line-height: 26px; max-width: 760px; text-wrap: pretty; }
+
+/* тёмный слайд-раздел */
+.sl-dark { background: var(--slab); color: var(--on-slab); }
+.sl-dark .sl-meta, .sl-dark .sl-label, .sl-dark .sl-lead { color: var(--on-slab-muted); }
+.sl-dark .sl-take { border-top-color: var(--on-slab-muted); }
+.sl-partnum { font-family: var(--font-serif); font-size: 120px; line-height: 1; font-weight: 400; color: var(--clay); }
+
+/* сетка 2×2 */
+.sl-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) var(--space-6); }
+.sl-cell { display: flex; flex-direction: column; gap: var(--space-1); padding-top: var(--space-2); border-top: 1px solid var(--line); min-width: 0; }
+.sl-cell h3, .sl-card h3, .sl-col h3 { font-family: var(--font-serif); font-size: 20px; line-height: 26px; font-weight: 500; }
+.sl-cell p { font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+
+/* карточки */
+.sl-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
+.sl-cards.c4 { grid-template-columns: repeat(4, 1fr); }
+.sl-card { background: var(--surface-sunk); border-radius: var(--radius-md); padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); min-width: 0; }
+.sl-card p { font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.sl-card .sl-label { color: var(--ink-muted); }
+
+/* сравнение колонок */
+.sl-compare { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+.sl-compare.c3 { grid-template-columns: repeat(3, 1fr); gap: var(--space-4); }
+.sl-col { display: flex; flex-direction: column; gap: var(--space-3); padding-top: var(--space-3); border-top: 2px solid var(--ink); min-width: 0; }
+.sl-col.is-accent { border-top-color: var(--clay); }
+.sl-col dl { display: flex; flex-direction: column; gap: var(--space-2); }
+.sl-col dt { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.sl-col dd { font-size: 14px; line-height: 20px; }
+
+/* таблица */
+.sl-table { width: 100%; border-collapse: collapse; font-size: 14px; line-height: 20px; font-variant-numeric: tabular-nums; }
+.sl-table th { text-align: left; font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); padding: 0 var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--ink); vertical-align: bottom; }
+.sl-table td { padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.sl-table td.num, .sl-table th.num { text-align: right; }
+.sl-table tr.is-mark td { background: var(--clay-soft); }
+
+/* плашка «ПОКАЗ» */
+.sl-pill { display: inline-flex; align-items: center; gap: var(--space-2); align-self: flex-start; height: 28px; padding: 0 14px; border-radius: var(--radius-full); background: var(--clay); color: var(--on-clay); font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.sl-pill::before { content: ""; width: 0; height: 0; border-left: 8px solid currentColor; border-top: 5px solid transparent; border-bottom: 5px solid transparent; }
+.sl-steps { display: flex; flex-direction: column; gap: var(--space-2); counter-reset: st; max-width: 720px; }
+.sl-steps li { list-style: none; display: grid; grid-template-columns: 32px 1fr; font-size: 16px; line-height: 24px; counter-increment: st; }
+.sl-steps li::before { content: counter(st); font-family: var(--font-serif); color: var(--ink-muted); }
+
+/* плашка-ловушка */
+.sl-callout { background: var(--clay-soft); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); font-size: 14px; line-height: 20px; color: var(--ink); max-width: 760px; display: flex; flex-direction: column; gap: var(--space-1); }
+.sl-callout .sl-label { color: var(--clay-text); }
+
+/* домашка: метка слева, текст справа */
+.sl-try { display: grid; grid-template-columns: 140px 1fr; gap: var(--space-3) var(--space-5); align-items: baseline; }
+.sl-try dt { font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.sl-try dd { font-size: 14px; line-height: 20px; }
+.sl-try ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 2px; }
+
+/* вопросы */
+.sl-qs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 var(--space-6); counter-reset: q; }
+.sl-qs li { list-style: none; display: grid; grid-template-columns: 32px 1fr; padding: var(--space-2) 0; border-bottom: 1px solid var(--line); font-family: var(--font-serif); font-size: 18px; line-height: 24px; counter-increment: q; }
+.sl-qs li::before { content: counter(q); font-family: var(--font-sans); font-size: 12px; line-height: 24px; color: var(--ink-muted); }
+
+/* схема слоёв */
+.sl-scheme { display: grid; grid-template-columns: 1fr 120px; gap: var(--space-3); }
+.sl-layers { display: flex; flex-direction: column; }
+.sl-layer { display: grid; grid-template-columns: 200px 1fr; gap: var(--space-4); padding: var(--space-2) 0; border-top: 1px solid var(--line); align-items: baseline; }
+.sl-layer:first-child { border-top-color: var(--ink); }
+.sl-layer h3 { font-family: var(--font-serif); font-size: 20px; line-height: 26px; font-weight: 500; }
+.sl-layer p { font-size: 14px; line-height: 20px; color: var(--ink-muted); }
+.sl-through { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); }
+.sl-band { border-radius: var(--radius-md); display: flex; align-items: center; justify-content: center; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11px; line-height: 16px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; }
+.sl-band.ctx { background: var(--clay); color: var(--on-clay); }
+.sl-band.data { background: var(--surface-sunk); color: var(--ink); }
+
+/* график-таймлайн */
+.sl-chart text { font-family: var(--font-sans); font-size: 11px; fill: var(--ink-muted); }
+.sl-chart .lane-name { font-size: 13px; fill: var(--ink); font-weight: 500; }
+.sl-chart .grid { stroke: var(--line); stroke-width: 1; }
+.sl-chart .axis { stroke: var(--ink); stroke-width: 1; }
+.sl-chart .a { fill: var(--clay); }
+.sl-chart .b { fill: var(--sky); }
+.sl-chart .c { fill: var(--sage); }
+.sl-chart .count { font-family: var(--font-serif); font-size: 15px; fill: var(--ink); }
+

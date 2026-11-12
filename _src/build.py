@@ -179,7 +179,7 @@ def top(base, current):
         return f'<a href="{base}{href}"{cur}>{label}</a>'
     return f"""<header class="wrap top">
   <a class="brand" href="{base}index.html">{LOGO}<span>{SITE_TITLE}</span></a>
-  <nav class="nav" aria-label="Разделы">{nav("index.html", "Все часики", "home")}{nav("ukazatel/index.html", "Указатель", "index")}</nav>
+  <nav class="nav" aria-label="Разделы">{nav("index.html", "Все часики", "home")}{nav("ukazatel/index.html", "Указатель", "index")}{nav("slides/index.html", "Слайды", "slides")}</nav>
 </header>
 """
 
@@ -419,6 +419,8 @@ def main():
         (d / "index.html").write_text(page_chasik(ch, chs), encoding="utf-8")
     (OUT / "ukazatel").mkdir()
     (OUT / "ukazatel" / "index.html").write_text(page_index(chs), encoding="utf-8")
+    import slides
+    slides.build(OUT, head, top, foot)
     (OUT / "robots.txt").write_text("User-agent: *\nDisallow: /\n", encoding="utf-8")
     (OUT / ".nojekyll").write_text("", encoding="utf-8")
     print(f"Готово: {OUT} — {len(chs)} {plural(len(chs), 'часик', 'часика', 'часиков')}")
