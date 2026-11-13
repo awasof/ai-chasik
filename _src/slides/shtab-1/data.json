@@ -22,7 +22,7 @@
   },
   "updatedNote": "Обновлено 12 ноября 2026."
  },
- "css": "\n.x-tree { margin: 0; padding: 10px 16px; border-radius: var(--radius-md); background: var(--surface-sunk); font: 400 13px/19px var(--font-mono); color: var(--ink); white-space: pre; }\n.x-tree i { font-style: normal; font-family: var(--font-sans); font-size: 13px; color: var(--ink-muted); }\n.x-tree .later { color: var(--ink-faint); }\n.x-file { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); overflow: hidden; }\n.x-file-n { padding: 8px 14px; background: var(--surface-sunk); font: 500 13px/18px var(--font-mono); }\n.x-file-r { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 7px 14px; border-top: 1px solid var(--line); font-size: 14px; line-height: 19px; }\n.x-file-r b { font-weight: 600; }\n.x-file-r span { color: var(--ink-muted); }\n.x-file-r.later { border-top-style: dashed; color: var(--ink-faint); }\n.x-file-r.later span, .x-file-r.later b { color: var(--ink-faint); }\n.x-row .x-probe { grid-template-columns: 1fr; gap: 14px; }\n.sl .sl-title { max-width: 880px; }\n.sl-cards.c5 { grid-template-columns: repeat(5, 1fr); }\n.x-row .sl-try { grid-template-columns: 96px 1fr; gap: 10px 16px; }\n.sl .x-shot img, .sl .x-shot .ph { max-height: 190px; }\n.sl .x-shot img { object-fit: contain; object-position: left top; }\n.sl-cards.c5 { gap: 12px; }\n.is-probe .sl-cards { gap: 12px; }\n.is-probe .sl-cards .sl-card { padding: 14px 16px; gap: 4px; }\n.is-probe .sl-cards .sl-card h3 { font-size: 20px; line-height: 26px; }\n.is-probe .sl-cards .sl-card p { font-size: 14px; line-height: 19px; }\n.details .x-shot .ph { aspect-ratio: 16 / 9; }\n.sl-cards.c5 .sl-card { padding: 16px; }\n.sl-cards.c5 .sl-card h3 { font-size: 19px; line-height: 24px; }\n.sl-cards.c5 .sl-card p { font-size: 14px; line-height: 19px; }\n.x-file-r { padding: 6px 14px; }\n.x-ask { font-family: var(--font-serif); font-size: 20px; line-height: 26px; margin: 0; }\n.x-bad { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; line-height: 20px; color: var(--ink-muted); }\n.x-bad s { text-decoration: none; padding: 3px 10px; border-radius: var(--radius-full); background: var(--surface-sunk); color: var(--ink); }\n.x-code { margin: 0; padding: 14px 16px; border-radius: var(--radius-md); background: var(--surface-sunk); font: 400 13px/20px var(--font-mono); white-space: pre-wrap; }\n",
+ "css": "\n.x-tree { margin: 0; padding: 10px 16px; border-radius: var(--radius-md); background: var(--surface-sunk); font: 400 13px/19px var(--font-mono); color: var(--ink); white-space: pre; }\n.x-tree i { font-style: normal; font-family: var(--font-sans); font-size: 13px; color: var(--ink-muted); }\n.x-tree .later { color: var(--ink-faint); }\n.x-file { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface); overflow: hidden; }\n.x-file-n { padding: 8px 14px; background: var(--surface-sunk); font: 500 13px/18px var(--font-mono); }\n.x-file-r { display: grid; grid-template-columns: 130px 1fr; gap: 12px; padding: 7px 14px; border-top: 1px solid var(--line); font-size: 14px; line-height: 19px; }\n.x-file-r b { font-weight: 600; }\n.x-file-r span { color: var(--ink-muted); }\n.x-file-r.later { border-top-style: dashed; color: var(--ink-faint); }\n.x-file-r.later span, .x-file-r.later b { color: var(--ink-faint); }\n.x-row .x-probe { grid-template-columns: 1fr; gap: 14px; }\n.sl .sl-title { max-width: 880px; }\n.sl-cards.c5 { grid-template-columns: repeat(5, 1fr); }\n.x-row .sl-try { grid-template-columns: 96px 1fr; gap: 10px 16px; }\n.sl .x-shot img, .sl .x-shot .ph { max-height: 190px; }\n.sl .x-shot img { object-fit: contain; object-position: left top; }\n.sl-cards.c5 { gap: 12px; }\n.is-probe .sl-cards { gap: 12px; }\n.is-probe .sl-cards .sl-card { padding: 14px 16px; gap: 4px; }\n.is-probe .sl-cards .sl-card h3 { font-size: 20px; line-height: 26px; }\n.is-probe .sl-cards .sl-card p { font-size: 14px; line-height: 19px; }\n.details .x-shot .ph { aspect-ratio: 16 / 9; }\n.sl-cards.c5 .sl-card { padding: 16px; }\n.sl-cards.c5 .sl-card h3 { font-size: 19px; line-height: 24px; }\n.sl-cards.c5 .sl-card p { font-size: 14px; line-height: 19px; }\n.x-file-r { padding: 6px 14px; }\n.x-ask { font-family: var(--font-serif); font-size: 20px; line-height: 26px; margin: 0; }\n.x-bad { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 15px; line-height: 20px; color: var(--ink-muted); }\n.x-bad s { text-decoration: none; padding: 3px 10px; border-radius: var(--radius-full); background: var(--surface-sunk); color: var(--ink); }\n.x-live { display: flex; flex-direction: column; justify-content: center; gap: 6px; min-height: 150px; padding: 16px 18px; border: 1px dashed var(--ink-faint); border-radius: var(--radius-md); font-size: 15px; line-height: 21px; color: var(--ink-muted); }\n.x-live .sl-label { color: var(--clay-text); }\n.x-code { margin: 0; padding: 14px 16px; border-radius: var(--radius-md); background: var(--surface-sunk); font: 400 13px/20px var(--font-mono); white-space: pre-wrap; }\n",
  "parts": [
   {
    "id": "in",
@@ -410,13 +410,7 @@
       ],
       [
        {
-        "shots": [
-         {
-          "file": "ch1-08-s-chego-nachinaem.png",
-          "name": "Ответ агента в новой сессии"
-         }
-        ],
-        "wide": true
+        "html": "<div class=\"x-live\"><span class=\"sl-label\">Игорь покажет</span><span>вживую: ответ агента в новой сессии на «С чего начинаем?»</span></div>"
        }
       ]
      ],
@@ -607,12 +601,7 @@
      "h": "Что агент делает по «Разбери inbox»",
      "lead": "Отдельного промпта нет. Порядок записан в разделе «Входящие» в `AGENTS.md` — его написал промпт 1:",
      "html": "<pre class=\"x-code\">## Входящие\nПо фразе «разбери inbox»:\n1. Прочитай каждый файл в inbox/ и сделай из него .md-версию: Word и PDF переведи в текст,\n   .md и .txt скопируй. Оригинал не меняй.\n2. Определи, что это за файл — бриф, письмо, транскрипт встречи, дизайн, гайд, выгрузка, методология —\n   и к какому проекту из projects/index.md он относится. Методологию клади не в проект,\n   а в methodology/ — после проверки дублей.\n3. Чего не понял — спроси, по одному вопросу:\n   - это существующий проект или новый?\n   - новый — как его назвать? Предложи вариант из 2–3 слов по брифу, решаю я;\n   - есть ли у проекта номер?\n   - какой это тип проекта, если из файлов не ясно.\n   Остального не спрашивай: чего нет в файлах — в «Надо уточнить» с 🔍.\n4. Покажи таблицу «было → стало»: файл → новое имя латиницей → папка проекта. Жди «ок».\n5. После «ок»: новый проект заведи из projects/_template/, положи .md-версии в папку проекта,\n   оригиналы перенеси в processed/ и запиши в processed/index.md, что во что превратилось.\n   Заполни или обнови карточку, допиши строку в журнал карточки и в projects/index.md.\n6. Скажи, что изменилось в каждом проекте, и проверь, что inbox/ пуст.</pre>",
-     "shots": [
-      {
-       "file": "ch1-13-bylo-stalo.png",
-       "name": "Вопросы агента и таблица «было → стало»"
-      }
-     ]
+     "after": "**Игорь покажет** вживую: вопросы агента и таблицу «было → стало» на демо-проекте."
     },
     {
      "h": "Что класть дальше",
@@ -878,18 +867,19 @@
    "lead": "«Напиши письмо заказчику с вопросами по брифу»",
    "body": [
     {
-     "shots": [
-      {
-       "file": "ch1-15-bez-shtaba.png",
-       "name": "Пустой чат"
-      },
-      {
-       "file": "ch1-15-v-shtabe.png",
-       "name": "Штаб: папка с карточкой и брифом"
-      }
+     "row": [
+      [
+       {
+        "html": "<div class=\"x-live\"><span class=\"sl-label\">Игорь покажет</span><span>в пустом чате: ответ без штаба</span></div>"
+       }
+      ],
+      [
+       {
+        "html": "<div class=\"x-live\"><span class=\"sl-label\">Игорь покажет</span><span>в штабе: ответ в папке с карточкой и брифом</span></div>"
+       }
+      ]
      ],
-     "cols": 2,
-     "wide": true
+     "w": "1fr 1fr"
     }
    ],
    "take": "Модель та же — разница в контексте",
@@ -1095,12 +1085,7 @@
     },
     {
      "h": "Дубли: что показывает агент и что решать",
-     "shots": [
-      {
-       "file": "ch1-10-dubli.png",
-       "name": "Таблица дублей: файлы · что совпадает · чем отличаются · что предлагает агент"
-      }
-     ],
+     "after": "**Игорь покажет** вживую: таблицу дублей — файлы · что совпадает · чем отличаются · что предлагает агент.",
      "list": [
       "Правило проверки записано в `AGENTS.md`. Срабатывает, когда методология приходит через `inbox/` или ложится в `methodology/`, и по фразе «проверь методологии»",
       "Своя правка к скачанной → оставить обе, главной считать свою",
