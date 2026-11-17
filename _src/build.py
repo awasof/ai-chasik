@@ -41,10 +41,11 @@ def vlink(ch, t):
     return f"{ch['video']}{sep}start_from={max(0, int(t) - 3)}"
 
 
-def duration_text(ch):
-    if ch.get("durationApprox"):
-        return "не менее 54 минут"
-    return f"{ch['durationMin']} {plural(ch['durationMin'], 'минута', 'минуты', 'минут')}"
+def recording_length(ch):
+    minutes = ch.get("durationMin")
+    if minutes is None:
+        return ""
+    return f"{minutes} {plural(minutes, 'минута', 'минуты', 'минут')}"
 
 
 def tc(ch, t, label=None):
@@ -104,13 +105,14 @@ def dial(ch, kind="full", animate=False):
             x, y = pt(R - 21, ang(m * 60))
             parts.append(f'<text class="hour" x="{x:.1f}" y="{y:.1f}">{m}</text>')
 
-    frac = min(ch["durationSec"], 3600) / 3600
+    duration = ch.get("durationSec", 0)
+    frac = min(duration, 3600) / 3600
     length = 2 * math.pi * R * frac
-    if ch["durationSec"] >= 3600:
+    if duration >= 3600:
         parts.append(f'<circle class="run" r="{R}" style="--len:{length:.1f}" transform="rotate(-90)"/>')
-    else:
+    elif duration:
         x0, y0 = pt(R, -90)
-        x1, y1 = pt(R, ang(ch["durationSec"]))
+        x1, y1 = pt(R, ang(duration))
         large = 1 if frac > 0.5 else 0
         parts.append(f'<path class="run" style="--len:{length:.1f}" d="M{x0:.1f},{y0:.1f} A{R},{R} 0 {large} 1 {x1:.1f},{y1:.1f}"/>')
 
@@ -135,19 +137,21 @@ def dial(ch, kind="full", animate=False):
                 f'<title>{i}. {e(t["title"])} — {fmt(t["t"])}</title>'
                 f'<line class="spoke" x1="{sx1:.1f}" y1="{sy1:.1f}" x2="{sx2:.1f}" y2="{sy2:.1f}"/>'
                 f'<circle cx="{x:.1f}" cy="{y:.1f}" r="8.5"/><text x="{x:.1f}" y="{y:.1f}">{i}</text></a>')
-        suffix = "" if ch["durationSec"] >= 3600 else " из 60"
-        center = (f'<text class="center-big" y="4" font-size="20">{ch["durationMin"]}</text>'
-                  f'<text class="center-small" y="18" font-size="8">{plural(ch["durationMin"], "минута", "минуты", "минут")}{suffix}</text>')
         # центр не должен перекрывать отметки с малым радиусом — если они есть, центр убираем
-        if any(abs(x) < 22 and abs(y) < 22 for x, y in placed):
-            center = ""
-        parts.append(center)
+        if duration and not any(abs(x) < 22 and abs(y) < 22 for x, y in placed):
+            minutes = ch["durationMin"]
+            suffix = " из 60" if duration < 3600 else ""
+            parts.append(f'<text class="center-big" y="4" font-size="20">{minutes}</text>'
+                         f'<text class="center-small" y="18" font-size="8">{plural(minutes, "минута", "минуты", "минут")}{suffix}</text>')
     else:
         parts.append(f'<text class="center-big" y="13" font-size="38">{ch["n"]}</text>')
 
     cls = "dial" + (" animate" if animate else "")
-    label = (f'Циферблат часика {ch["n"]}: запись {ch["durationMin"]} минут, '
-             f'{len(ch["topics"])} тем по минутам') if kind == "full" else f'Часик {ch["n"]}'
+    label = f'Часик {ch["n"]}'
+    if kind == "full":
+        label = f'Темы часика {ch["n"]} по времени записи'
+        if duration:
+            label += f', запись {recording_length(ch)}'
     return (f'<svg class="{cls}" viewBox="-104 -104 208 208" role="img" aria-label="{e(label)}">'
             + "".join(parts) + "</svg>")
 
@@ -243,10 +247,15 @@ def page_home(chs):
     base = ""
     rows = []
     for ch in sorted(chs, key=lambda c: c["n"], reverse=True):
+        when = [f"Часик {ch['n']}"]
+        if ch.get("dateText"):
+            when.append(ch["dateText"])
+        if length := recording_length(ch):
+            when.append(f"запись {length}")
         rows.append(f"""<li class="chasik-row">
   <a class="mini" href="{ch['slug']}/index.html" aria-hidden="true" tabindex="-1">{dial(ch, "mini")}</a>
   <div>
-    <div class="when">Часик {ch['n']}. {e(ch['dateText'])}, запись {duration_text(ch)}</div>
+    <div class="when">{e(' · '.join(when))}</div>
     <h3><a href="{ch['slug']}/index.html">{e(ch['title'])}</a></h3>
     <p>{e(ch['lead'])}</p>
     <div class="actions">{btn_video(ch, primary=False)}<a class="btn" href="{ch['slug']}/index.html">Читать конспект</a></div>
@@ -298,6 +307,13 @@ def page_chasik(ch, chs):
     materials = (f'<a class="btn" href="{e(ch["materials"])}" target="_blank" rel="noopener noreferrer">Слайды и материалы</a>'
                  if ch.get("materials") else "")
     materials += "".join(f'<a class="btn" href="{e(m["url"])}" target="_blank" rel="noopener noreferrer">{e(m["label"])}</a>' for m in ch.get("materials_list", []))
+    metadata = [ch["dateText"]] if ch.get("dateText") else []
+    if length := recording_length(ch):
+        metadata.append(f"Запись {length}")
+    metadata.append(f"Читать {mins} {plural(mins, 'минуту', 'минуты', 'минут')}")
+    dial_caption = "Кружки отмечают темы. Номер темы открывает запись с этого места."
+    if ch.get("durationSec"):
+        dial_caption = "Синяя дуга показывает время записи в пределах часа. " + dial_caption
 
     others = sorted(chs, key=lambda c: c["n"])
     idx = [c["n"] for c in others].index(ch["n"])
@@ -316,7 +332,7 @@ def page_chasik(ch, chs):
   <header class="page-head">
     <div class="num">Часик {ch['n']}</div>
     <h1>{e(ch['title'])}</h1>
-    <p class="meta">{e(ch['dateText'])}. Запись {duration_text(ch)}, читать {mins} {plural(mins, 'минуту', 'минуты', 'минут')}.</p>
+    <p class="meta">{e(' · '.join(metadata))}</p>
     <div class="actions">{btn_video(ch)}{materials}</div>
     <p class="note">Запись открывается в Dion — нужно войти в свой аккаунт. Жёлтое время рядом с темой открывает запись на этой минуте.</p>
   </header>
@@ -326,13 +342,13 @@ def page_chasik(ch, chs):
   <section class="block"><h2>О чём говорили</h2>
     <div class="topics-grid">
       <ol class="topics">{topics}</ol>
-      <div class="dial-wrap">{dial(ch, "full", animate=True)}<p class="dial-caption">Синяя дуга — запись, кружки — темы по минутам часа. Нажмите на номер, чтобы открыть запись с этого места.</p></div>
+      <div class="dial-wrap">{dial(ch, "full", animate=True)}<p class="dial-caption">{dial_caption}</p></div>
     </div>
   </section>
 
   <section class="block measure"><h2>Лайфхаки</h2><ul class="tips">{''.join(tips)}</ul></section>
 
-  <section class="block measure"><h2>Вопросы из зала</h2><dl class="qa">{qa}</dl></section>
+{f'  <section class="block measure"><h2>Вопросы из зала</h2><dl class="qa">{qa}</dl></section>' if qa else ''}
 
   {f'<section class="block measure"><h2>Попробовать до следующего часика</h2><ol class="try">{trys}</ol></section>' if trys else ''}
 
