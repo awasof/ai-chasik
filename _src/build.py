@@ -104,12 +104,15 @@ def dial(ch, kind="full", animate=False):
             x, y = pt(R - 21, ang(m * 60))
             parts.append(f'<text class="hour" x="{x:.1f}" y="{y:.1f}">{m}</text>')
 
-    frac = min(ch["durationSec"], 3599) / 3600
-    x0, y0 = pt(R, -90)
-    x1, y1 = pt(R, ang(ch["durationSec"]))
-    large = 1 if frac > 0.5 else 0
+    frac = min(ch["durationSec"], 3600) / 3600
     length = 2 * math.pi * R * frac
-    parts.append(f'<path class="run" style="--len:{length:.1f}" d="M{x0:.1f},{y0:.1f} A{R},{R} 0 {large} 1 {x1:.1f},{y1:.1f}"/>')
+    if ch["durationSec"] >= 3600:
+        parts.append(f'<circle class="run" r="{R}" style="--len:{length:.1f}" transform="rotate(-90)"/>')
+    else:
+        x0, y0 = pt(R, -90)
+        x1, y1 = pt(R, ang(ch["durationSec"]))
+        large = 1 if frac > 0.5 else 0
+        parts.append(f'<path class="run" style="--len:{length:.1f}" d="M{x0:.1f},{y0:.1f} A{R},{R} 0 {large} 1 {x1:.1f},{y1:.1f}"/>')
 
     for t in ch["topics"]:
         x, y = pt(R, ang(t["t"]))
@@ -132,8 +135,9 @@ def dial(ch, kind="full", animate=False):
                 f'<title>{i}. {e(t["title"])} — {fmt(t["t"])}</title>'
                 f'<line class="spoke" x1="{sx1:.1f}" y1="{sy1:.1f}" x2="{sx2:.1f}" y2="{sy2:.1f}"/>'
                 f'<circle cx="{x:.1f}" cy="{y:.1f}" r="8.5"/><text x="{x:.1f}" y="{y:.1f}">{i}</text></a>')
+        suffix = "" if ch["durationSec"] >= 3600 else " из 60"
         center = (f'<text class="center-big" y="4" font-size="20">{ch["durationMin"]}</text>'
-                  f'<text class="center-small" y="18" font-size="8">{plural(ch["durationMin"], "минута", "минуты", "минут")} из 60</text>')
+                  f'<text class="center-small" y="18" font-size="8">{plural(ch["durationMin"], "минута", "минуты", "минут")}{suffix}</text>')
         # центр не должен перекрывать отметки с малым радиусом — если они есть, центр убираем
         if any(abs(x) < 22 and abs(y) < 22 for x, y in placed):
             center = ""
