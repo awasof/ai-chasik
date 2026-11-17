@@ -37,7 +37,14 @@ def fmt(t):
 
 
 def vlink(ch, t):
-    return f"{ch['video']}?start_from={max(0, int(t) - 3)}"
+    sep = "&" if "?" in ch["video"] else "?"
+    return f"{ch['video']}{sep}start_from={max(0, int(t) - 3)}"
+
+
+def duration_text(ch):
+    if ch.get("durationApprox"):
+        return "не менее 54 минут"
+    return f"{ch['durationMin']} {plural(ch['durationMin'], 'минута', 'минуты', 'минут')}"
 
 
 def tc(ch, t, label=None):
@@ -235,7 +242,7 @@ def page_home(chs):
         rows.append(f"""<li class="chasik-row">
   <a class="mini" href="{ch['slug']}/index.html" aria-hidden="true" tabindex="-1">{dial(ch, "mini")}</a>
   <div>
-    <div class="when">Часик {ch['n']}. {e(ch['dateText'])}, запись {ch['durationMin']} {plural(ch['durationMin'], 'минута', 'минуты', 'минут')}</div>
+    <div class="when">Часик {ch['n']}. {e(ch['dateText'])}, запись {duration_text(ch)}</div>
     <h3><a href="{ch['slug']}/index.html">{e(ch['title'])}</a></h3>
     <p>{e(ch['lead'])}</p>
     <div class="actions">{btn_video(ch, primary=False)}<a class="btn" href="{ch['slug']}/index.html">Читать конспект</a></div>
@@ -286,6 +293,7 @@ def page_chasik(ch, chs):
     summary = "".join(f"<p>{e(p)}</p>" for p in ch["summary"])
     materials = (f'<a class="btn" href="{e(ch["materials"])}" target="_blank" rel="noopener noreferrer">Слайды и материалы</a>'
                  if ch.get("materials") else "")
+    materials += "".join(f'<a class="btn" href="{e(m["url"])}" target="_blank" rel="noopener noreferrer">{e(m["label"])}</a>' for m in ch.get("materials_list", []))
 
     others = sorted(chs, key=lambda c: c["n"])
     idx = [c["n"] for c in others].index(ch["n"])
@@ -304,7 +312,7 @@ def page_chasik(ch, chs):
   <header class="page-head">
     <div class="num">Часик {ch['n']}</div>
     <h1>{e(ch['title'])}</h1>
-    <p class="meta">{e(ch['dateText'])}. Запись {ch['durationMin']} {plural(ch['durationMin'], 'минута', 'минуты', 'минут')}, читать {mins} {plural(mins, 'минуту', 'минуты', 'минут')}.</p>
+    <p class="meta">{e(ch['dateText'])}. Запись {duration_text(ch)}, читать {mins} {plural(mins, 'минуту', 'минуты', 'минут')}.</p>
     <div class="actions">{btn_video(ch)}{materials}</div>
     <p class="note">Запись открывается в Dion — нужно войти в свой аккаунт. Жёлтое время рядом с темой открывает запись на этой минуте.</p>
   </header>
