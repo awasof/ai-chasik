@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Дашборд штаба — учебное демо</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0 auto; max-width: 76rem; padding: clamp(1rem, 4vw, 3rem);
+         font: 16px/1.5 system-ui, sans-serif; color: #1d302a; background: #f3f6f4; }
+  h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.035em; }
+  header { margin-bottom: 2rem; }
+  header p { color: #4b5c54; }
+  main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+  section { padding: .95rem; border-top: 3px solid #356951; border-radius: .35rem;
+            background: #e5ede7; min-width: 0; }
+  h2 { margin: 0 0 .8rem; font-size: 1.1rem; }
+  article { margin: .65rem 0 0; padding: .85rem; background: white; border: 1px solid #cad8cf;
+            border-radius: .35rem; overflow-wrap: anywhere; }
+  h3 { margin: 0 0 .55rem; font-size: 1rem; }
+  article p { margin: .35rem 0 0; font-size: .9rem; }
+  article b { color: #354a40; }
+  a { color: #1c5740; text-underline-offset: .15em; }
+  .late, .late b { color: #a32020; }
+  @media (max-width: 750px) { main { grid-template-columns: 1fr; } }
+  button { font: inherit; padding: .45rem .8rem; border: 1px solid #356951;
+           border-radius: .35rem; color: #1d302a; background: white; cursor: pointer; }
+</style>
+<body>
+<header><h1>Штаб исследователя</h1><p>Учебный дашборд с вымышленными проектами</p><button type="button" id="confirm-demo" aria-pressed="false">Показать переход в Done</button>
+<p id="demo-result" role="status"></p></header>
+<main><section><h2>To do</h2><article><h3><a href="project-dostavka.md">Первый заказ с доставкой</a></h3><p><b>На очереди</b> Бриф получен</p><p><b>Следующий шаг</b> Разобрать бриф и предложить время брифинга</p><p><b>За кем</b> Исследователь</p><p><b>Срок</b> 23.11.2026</p></article></section>
+<section><h2>Ongoing</h2><article><h3><a href="project-samovyvoz.md">Самовывоз из пункта выдачи</a></h3><p><b>На очереди</b> Передача результатов</p><p><b>Следующий шаг</b> Уточнить, загружен ли проект в библиотеку</p><p><b>За кем</b> Исследователь</p><p><b>Срок</b> 20.11.2026</p></article><article><h3><a href="project-vozvrat.md">Возврат заказа в приложении</a></h3><p><b>На очереди</b> Анализ проверен лидом</p><p><b>Следующий шаг</b> Получить подтверждение лида по выводам</p><p><b>За кем</b> Лид</p><p><b>Срок</b> 19.11.2026</p></article></section>
+<section><h2>Done — контроль эффекта</h2><article><h3><a href="project-poisk.md">Поиск по каталогу</a></h3><p><b>На очереди</b> Эффект зафиксирован</p><p><b>Следующий шаг</b> Уточнить, какие рекомендации вошли в работу</p><p><b>За кем</b> Заказчик</p><p><b>Проверка эффекта</b> 26.11.2026</p></article><article><h3><a href="project-uvedomleniya.md">Уведомления о доставке</a></h3><p><b>Эффект зафиксирован</b></p></article></section></main>
+<script>
+const button = document.querySelector('#confirm-demo');
+const result = document.querySelector('#demo-result');
+const card = document.querySelector('a[href="project-samovyvoz.md"]').closest('article');
+const ongoing = card.parentElement;
+const done = document.querySelector('main section:last-child');
+const initialDetails = [...card.querySelectorAll('p')];
+const effect = document.createElement('p');
+effect.textContent = 'Проверка эффекта · 01.12.2026';
+
+button.addEventListener('click', () => {
+  const confirmed = button.getAttribute('aria-pressed') === 'false';
+  button.setAttribute('aria-pressed', String(confirmed));
+  for (const detail of initialDetails) detail.hidden = confirmed;
+  if (confirmed) {
+    card.append(effect);
+    done.querySelector('h2').after(card);
+  } else {
+    effect.remove();
+    ongoing.querySelector('h2').after(card);
+  }
+  button.textContent = confirmed ? 'Вернуть исходный вид' : 'Показать переход в Done';
+  result.textContent = confirmed
+    ? 'Загрузку в библиотеку подтвердили. «Самовывоз» перешёл в Done.'
+    : '«Самовывоз» снова в Ongoing и ждёт подтверждения загрузки.';
+});
+</script>
+</body>
+</html>
