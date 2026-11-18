@@ -784,6 +784,7 @@ a.file:hover { border-color: var(--ink-muted); }
   const FILES = window.LECTURE_FILES || {};
   const fileKey = k => String(k || '').normalize('NFC').toLowerCase().trim();
   const fileOf = f => f.url ? [f.url, f.ext] : (FILES[fileKey(f.file)] || FILES[fileKey(f.t)] || null);
+  const fileLinkAttrs = f => f.url ? 'target="_blank" rel="noopener"' : 'download';
   const app = document.getElementById('app');
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -967,7 +968,7 @@ a.file:hover { border-color: var(--ink-muted); }
     // Проба недели 3: шаги с отметками (запоминаются в браузере), «что ожидаем», файлы и промпты прямо на слайде
     probe: v => {
       const steps = (v.steps || []).map((x, i) => { const k = `${v.id}:${i}`, on = store.get('ck:' + k, false); return `<li><label><input type="checkbox" data-ck="${esc(k)}"${on ? ' checked' : ''}><span>${md(x)}</span></label></li>`; }).join('');
-      const files = (v.files || []).map(f => { const got = fileOf(f); return got ? `<a class="pf" href="${esc(got[0])}" download target="_blank" rel="noopener"><span class="ext">${esc(got[1])}</span>${md(f.t)}</a>` : `<span class="pf soon"><span class="ext">${esc(f.ext || 'FILE')}</span>${md(f.t)}</span>`; });
+      const files = (v.files || []).map(f => { const got = fileOf(f); return got ? `<a class="pf" href="${esc(got[0])}" ${fileLinkAttrs(f)}><span class="ext">${esc(got[1])}</span>${md(f.t)}</a>` : `<span class="pf soon"><span class="ext">${esc(f.ext || 'FILE')}</span>${md(f.t)}</span>`; });
       const prompts = (v.prompts || []).filter(n => D.prompts[n]).map(n => `<button class="pf pp" data-copy="${esc(n)}" title="Скопировать промпт"><span class="ext">⧉</span>${esc(n)}</button>`);
       const links = files.concat(prompts);
       return `<div class="x-probe">${steps ? `<ol class="pr-steps">${steps}</ol>` : ''}<div class="pr-side">${v.expect ? `<div class="pr-exp"><span class="sl-label">Что ожидаем</span><span>${md(v.expect)}</span></div>` : ''}${links.length ? `<div class="pr-files"><span class="sl-label">${esc(v.filesL || 'Файлы и промпты')}</span><span class="pr-row">${links.join('')}</span></div>` : ''}</div></div>`;
@@ -1123,7 +1124,7 @@ a.file:hover { border-color: var(--ink-muted); }
     return `<div class="files${two ? ' two' : ''}">${v.map(f => {
       const got = fileOf(f);
       const inner = `<span class="ext">${esc(got ? got[1] : f.ext)}</span><span><span class="t">${md(f.t)}</span><br><span class="n">${md(f.n || '')}</span></span>`;
-      return got ? `<a class="file" href="${esc(got[0])}" target="_blank" rel="noopener">${inner}</a>` : `<div class="file soon">${inner}</div>`;
+      return got ? `<a class="file" href="${esc(got[0])}" ${fileLinkAttrs(f)}>${inner}</a>` : `<div class="file soon">${inner}</div>`;
     }).join('')}</div>`;
   }
   function tableHTML(v) {
