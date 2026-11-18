@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Штаб исследователя · дашборд</title>
+  <link rel="stylesheet" href="dashboard.css">
+  <script type="module" src="dashboard.mjs"></script>
+</head>
+<body>
+  <header>
+    <h1>Штаб исследователя</h1>
+    <p class="intro">Дашборд читает карточки из выбранной папки. Пока вкладка открыта, обновляет их автоматически.</p>
+    <div class="actions">
+      <button type="button" id="connect">Подключить папку штаба</button>
+      <button type="button" id="resume" hidden>Разрешить чтение</button>
+      <button type="button" id="refresh" disabled>Обновить</button>
+    </div>
+    <p id="status" role="status">Выберите папку, в которой находится projects/.</p>
+  </header>
+  <section id="reminders" aria-labelledby="reminder-title" hidden>
+    <h2 id="reminder-title">Напоминания</h2>
+    <ul id="reminder-list"></ul>
+  </section>
+  <main id="board" aria-label="Проекты по статусам"></main>
+  <details id="issues" hidden>
+    <summary>Карточки, которые нужно настроить</summary>
+    <ul id="issue-list"></ul>
+  </details>
+</body>
+</html>
