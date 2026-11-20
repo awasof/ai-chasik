@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Модель статусов</title>
+  <style>
+:root { color: #1e2925; background: #f7f6f1; font: 17px/1.55 system-ui, sans-serif; }
+body { margin: 0 auto; max-width: 70rem; padding: clamp(1rem, 4vw, 3rem); }
+h1 { font-size: clamp(1.9rem, 4vw, 3.2rem); line-height: 1.13; margin: 1.3rem 0 .6rem; }
+h2 { font-size: 1.28rem; margin-top: 1.7rem; }
+p { max-width: 72ch; }
+a { color: #245c44; text-underline-offset: .17em; }
+nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; width: fit-content;
+     padding: 1rem; background: #e6eee7; border-radius: .45rem; }
+dt { font-weight: 700; }
+dd { margin: 0; }
+.content { overflow-x: auto; }
+table { border-collapse: collapse; min-width: min(100%, 38rem); }
+th, td { text-align: left; padding: .62rem .75rem; vertical-align: top; border-bottom: 1px solid #cbd6cd; }
+th { background: #e6eee7; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .28rem 0; }
+.task-done, .task-open { display: inline-block; min-width: 1.5rem; color: #245c44; font-weight: 700; }
+code { font-size: .9em; background: #e9ece6; border-radius: .25rem; padding: .1em .25em; }
+pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+  <nav aria-label="Материалы занятия"><a href="../index.html#s3">← К слайду 3</a>
+    <a href="team-rules.md" download>Скачать исходный Markdown</a></nav>
+  <main><h1>Модель статусов</h1><div class="content"><table>
+<thead>
+<tr>
+<th>Статус</th>
+<th>Что значит</th>
+<th>Когда переходим дальше</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>To do</td>
+<td>Запрос зафиксирован, работа ещё не началась.</td>
+<td>Начали работу. В учебном примере это подтверждает отметка о проведённом брифинге.</td>
+</tr>
+<tr>
+<td>Ongoing</td>
+<td>Проект в работе. Текущую стадию и следующий шаг отслеживаем в карточке.</td>
+<td>Презентация проведена, результаты отправлены заказчику, проект загружен в библиотеку.</td>
+</tr>
+<tr>
+<td>Done</td>
+<td>Результаты переданы. Проверяем эффект.</td>
+<td>Проект виден в Done до архивирования.</td>
+</tr>
+</tbody>
+</table>
+<p>Статус отвечает за колонку в общем обзоре. Стадия показывает, где проект находится внутри процесса.</p>
+</div></main>
+</body>
+</html>

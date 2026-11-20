@@ -6,6 +6,7 @@ import shutil
 import subprocess
 import sys
 
+from build_previews import build_previews
 
 ROOT = Path(__file__).resolve().parent
 FILES = ROOT / "files"
@@ -26,6 +27,7 @@ def main():
         for card in sorted((demo / "projects").glob("*/README.md")):
             shutil.copyfile(card, FILES / f"project-{card.parent.name}.md")
         shutil.copyfile(demo / "dashboard.html", FILES / "dashboard.html")
+        build_previews(FILES)
 
 
 if __name__ == "__main__":

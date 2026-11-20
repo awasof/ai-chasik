@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Как добавить дашборд в Chrome</title>
+  <style>
+:root { color: #1e2925; background: #f7f6f1; font: 17px/1.55 system-ui, sans-serif; }
+body { margin: 0 auto; max-width: 70rem; padding: clamp(1rem, 4vw, 3rem); }
+h1 { font-size: clamp(1.9rem, 4vw, 3.2rem); line-height: 1.13; margin: 1.3rem 0 .6rem; }
+h2 { font-size: 1.28rem; margin-top: 1.7rem; }
+p { max-width: 72ch; }
+a { color: #245c44; text-underline-offset: .17em; }
+nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; width: fit-content;
+     padding: 1rem; background: #e6eee7; border-radius: .45rem; }
+dt { font-weight: 700; }
+dd { margin: 0; }
+.content { overflow-x: auto; }
+table { border-collapse: collapse; min-width: min(100%, 38rem); }
+th, td { text-align: left; padding: .62rem .75rem; vertical-align: top; border-bottom: 1px solid #cbd6cd; }
+th { background: #e6eee7; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .28rem 0; }
+.task-done, .task-open { display: inline-block; min-width: 1.5rem; color: #245c44; font-weight: 700; }
+code { font-size: .9em; background: #e9ece6; border-radius: .25rem; padding: .1em .25em; }
+pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+  <nav aria-label="Материалы занятия"><a href="../index.html#s12">← К слайду 12</a>
+    <a href="chrome-setup.md" download>Скачать исходный Markdown</a></nav>
+  <main><h1>Как добавить дашборд в Chrome</h1><div class="content"><ol>
+<li>Распакуйте учебный архив в отдельную папку. Откройте <code>dashboard.html</code> и проверьте три представления. HTML показывает снимок карточек. Галочки в нём можно попробовать без изменения файлов.</li>
+<li>В Chrome откройте <code>chrome://extensions</code>. Включите «Режим разработчика» и выберите «Загрузить распакованное расширение». Укажите папку <code>chrome-extension</code>, в которой лежит <code>manifest.json</code>.</li>
+<li>Откройте меню расширений (значок пазла) и закрепите «Штаб исследователя». По клику на значок откроется доска.</li>
+<li>Нажмите «Подключить папку штаба». Выберите корень с <code>projects/</code>, <code>team-rules.md</code> и <code>dashboard-rules.json</code>. Chrome разрешит читать выбранную папку. После перезапуска он может попросить разрешение снова.</li>
+<li>Откройте Ongoing, затем «Самовывоз из пункта выдачи». В разделе передачи результатов отметьте загрузку в библиотеку, введите подтверждение и дату проверки эффекта. Перед сохранением проверьте предлагаемый переход в Done.</li>
+<li>При первом сохранении разрешите Chrome записать изменения в карточку. Убедитесь, что «Самовывоз» оказался в Done и галочка появилась в его <code>README.md</code>.</li>
+</ol>
+<p>В своём штабе сначала сверьте <code>dashboard-rules.json</code> с <code>team-rules.md</code>. Ключ <code>startStages</code> задаёт завершённые стадии для перехода из To do в Ongoing. Ключи <code>doneStages</code> и <code>doneChecks</code> задают обязательные стадии и пункты передачи для Done. Названия должны совпадать с карточками. Пример загружается в <strong>отдельную учебную папку</strong>, где можно спокойно проверить результат.</p>
+<p><a href="https://developer.chrome.com/docs/extensions/get-started/tutorial/hello-world#load-unpacked">Установка распакованного расширения в документации Chrome</a></p>
+</div></main>
+</body>
+</html>
