@@ -26,6 +26,11 @@ li { margin: .28rem 0; }
 .task-done, .task-open { display: inline-block; min-width: 1.5rem; color: #245c44; font-weight: 700; }
 code { font-size: .9em; background: #e9ece6; border-radius: .25rem; padding: .1em .25em; }
 pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.checklist { max-width: 37rem; margin: 1.5rem 0; padding: 1rem; border: 1px solid #cbd6cd; border-radius: .45rem; }
+.checklist legend { font-weight: 700; }
+.checklist label { display: flex; align-items: baseline; gap: .6rem; padding: .4rem; cursor: pointer; }
+.checklist input { accent-color: #245642; }
+button { font: inherit; padding: .5rem .85rem; background: #245642; color: white; border: 0; border-radius: .45rem; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -50,5 +55,6 @@ pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap:
 <li><span class="task-open">☐</span>Проект загружен в библиотеку.</li>
 </ul>
 </div></main>
+
 </body>
 </html>

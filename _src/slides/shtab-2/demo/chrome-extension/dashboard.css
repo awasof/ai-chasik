@@ -24,7 +24,10 @@ ul { padding-left: 1.3rem; margin: .45rem 0 0; }
 [hidden] { display: none !important; }
 .views { align-items: center; }
 .views button[aria-pressed="true"] { color: white; background: #245642; }
-#board.active { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); align-items: stretch; }
+#board.active { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: clamp(15rem, 28vw, 18rem); overflow-x: auto; padding-bottom: .85rem; align-items: stretch; }
+#board.active:focus-visible { outline: 2px solid #205a96; outline-offset: .15rem; }
+#stage-nav { align-items: center; margin-bottom: .75rem; }
+#stage-hint { color: #465d52; flex: 1 1 17rem; }
 #board .empty-stage { border-top: 1px solid #cad8cf; padding: .65rem 1rem; }
 #board .empty-stage h2 { color: #465d52; font-size: .97rem; margin: 0; }
 .card-link { padding: 0; border: 0; background: transparent; text-align: left; color: #1c5740; text-decoration: underline; text-underline-offset: .17em; font-weight: 670; }

@@ -7,7 +7,10 @@ const refresh = $("refresh");
 const dialog = $("project");
 const form = $("project-form");
 const checklist = $("project-checks");
-const filter = $("researcher");
+const board = $("board");
+const stageNav = $("stage-nav");
+const previousStages = $("previous-stages");
+const nextStages = $("next-stages");
 const demo = window.SHTAB_DEMO;
 const memory = demo ? new Map(Object.entries(demo.cards)) : null;
 const labels = Object.fromEntries(columns);
@@ -67,7 +70,6 @@ function cardSummary(card, detailed, today) {
   }
   if (detailed) {
     if (card.stages.length) labeled(article, "Стадии", `${card.stages.filter(x => x.done).length} из ${card.stages.length}`);
-    labeled(article, "Исследователь", card.researcher);
     labeled(article, "Ведёт стадию", card.stageOwner);
     labeled(article, "Подтверждает", card.stageApprover);
     labeled(article, "Следующий шаг", card.next);
@@ -77,21 +79,20 @@ function cardSummary(card, detailed, today) {
   return article;
 }
 
-const researcherOf = card => card.researcher || card.stageOwner;
+function updateStageNav() {
+  const overflow = board.scrollWidth - board.clientWidth;
+  stageNav.hidden = scope !== "active" || overflow <= 1;
+  previousStages.disabled = board.scrollLeft <= 1;
+  nextStages.disabled = board.scrollLeft >= overflow - 1;
+}
 
 function render() {
   const { cards, issues } = snapshot;
-  const board = $("board");
   const today = todayKey();
-  const active = cards.filter(card => card.status === "ongoing");
   $("overview").setAttribute("aria-pressed", String(scope === "overview"));
   $("active").setAttribute("aria-pressed", String(scope === "active"));
-  $("filter").hidden = scope !== "active";
-  const previous = filter.value;
-  const people = [...new Set(active.map(researcherOf).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
-  filter.replaceChildren(new Option("Все", ""), ...people.map(name => new Option(name, name)));
-  filter.value = people.includes(previous) ? previous : "";
   board.className = scope;
+  board.tabIndex = scope === "active" ? 0 : -1;
 
   if (scope === "overview") {
     board.replaceChildren(...columns.map(([id, title]) => {
@@ -111,9 +112,9 @@ function render() {
       return section;
     }));
   } else {
-    const shown = active.filter(card => !filter.value || researcherOf(card) === filter.value);
+    const active = cards.filter(card => card.status === "ongoing");
     const order = new Map();
-    for (const card of shown) {
+    for (const card of active) {
       card.stages.forEach((item, index) => {
         const title = stageTitle(item);
         if (title !== "Эффект зафиксирован" && !order.has(title)) order.set(title, index);
@@ -121,7 +122,7 @@ function render() {
       if (card.handoff.length && !order.has("Передача результатов")) order.set("Передача результатов", card.stages.length - 1.5);
     }
     const groups = new Map([...order].sort((a, b) => a[1] - b[1]).map(([title]) => [title, []]));
-    for (const card of shown.sort((a, b) => a.stageOrder - b.stageOrder)) {
+    for (const card of active.sort((a, b) => a.stageOrder - b.stageOrder)) {
       const title = card.stage || "Стадия не указана";
       if (!groups.has(title)) groups.set(title, []);
       groups.get(title).push(card);
@@ -132,8 +133,9 @@ function render() {
       section.append(element("h2", `${title} · ${group.length}`), ...group.map(card => cardSummary(card, true, today)));
       return section;
     }));
-    if (!shown.length) board.append(element("p", "Нет проектов в работе для этого выбора."));
+    if (!active.length) board.append(element("p", "Нет проектов в работе."));
   }
+  updateStageNav();
   $("issues").hidden = !issues.length;
   $("issue-list").replaceChildren(...issues.map(issue => element("li", issue)));
 }
@@ -364,7 +366,10 @@ $("overview").addEventListener("click", () => selectScope("overview"));
 $("active").addEventListener("click", () => selectScope("active"));
 $("close-project").addEventListener("click", () => { if (!saving) dialog.close(); });
 dialog.addEventListener("cancel", event => { if (saving) event.preventDefault(); });
-filter.addEventListener("change", render);
+board.addEventListener("scroll", updateStageNav);
+window.addEventListener("resize", updateStageNav);
+previousStages.addEventListener("click", () => board.scrollBy({ left: -board.clientWidth, behavior: "smooth" }));
+nextStages.addEventListener("click", () => board.scrollBy({ left: board.clientWidth, behavior: "smooth" }));
 
 if (demo) {
   connect.hidden = true;

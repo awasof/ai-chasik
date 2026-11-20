@@ -26,6 +26,11 @@ li { margin: .28rem 0; }
 .task-done, .task-open { display: inline-block; min-width: 1.5rem; color: #245c44; font-weight: 700; }
 code { font-size: .9em; background: #e9ece6; border-radius: .25rem; padding: .1em .25em; }
 pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.checklist { max-width: 37rem; margin: 1.5rem 0; padding: 1rem; border: 1px solid #cbd6cd; border-radius: .45rem; }
+.checklist legend { font-weight: 700; }
+.checklist label { display: flex; align-items: baseline; gap: .6rem; padding: .4rem; cursor: pointer; }
+.checklist input { accent-color: #245642; }
+button { font: inherit; padding: .5rem .85rem; background: #245642; color: white; border: 0; border-radius: .45rem; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -198,5 +203,6 @@ pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap:
 <p>Для каждого правила выберите режим. В одном агент сразу обновляет карточку при однозначном сигнале. В другом он сначала показывает, что нашёл, и ждёт подтверждения. После перехода карточка содержит галочку, источник, следующий шаг и за кем он. Списки в других файлах обновляются из карточки, если их ведут в штабе.</p>
 <p>Для галочек в учебном дашборде правила записаны в <code>dashboard-rules.json</code>. В демо переход из To do в Ongoing происходит после отметки «Брифинг проведён». Для Done нужны отметки о презентации, отправке результатов и загрузке в библиотеку. В своём штабе укажите условия вашей команды, прежде чем тестировать смену статуса.</p>
 </div></main>
+
 </body>
 </html>

@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Самовывоз из пункта выдачи</title>
+  <style>
+:root { color: #1e2925; background: #f7f6f1; font: 17px/1.55 system-ui, sans-serif; }
+body { margin: 0 auto; max-width: 70rem; padding: clamp(1rem, 4vw, 3rem); }
+h1 { font-size: clamp(1.9rem, 4vw, 3.2rem); line-height: 1.13; margin: 1.3rem 0 .6rem; }
+h2 { font-size: 1.28rem; margin-top: 1.7rem; }
+p { max-width: 72ch; }
+a { color: #245c44; text-underline-offset: .17em; }
+nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+dl { display: grid; grid-template-columns: auto 1fr; gap: .35rem 1rem; width: fit-content;
+     padding: 1rem; background: #e6eee7; border-radius: .45rem; }
+dt { font-weight: 700; }
+dd { margin: 0; }
+.content { overflow-x: auto; }
+table { border-collapse: collapse; min-width: min(100%, 38rem); }
+th, td { text-align: left; padding: .62rem .75rem; vertical-align: top; border-bottom: 1px solid #cbd6cd; }
+th { background: #e6eee7; }
+ul, ol { padding-inline-start: 1.4rem; }
+li { margin: .28rem 0; }
+.task-done, .task-open { display: inline-block; min-width: 1.5rem; color: #245c44; font-weight: 700; }
+code { font-size: .9em; background: #e9ece6; border-radius: .25rem; padding: .1em .25em; }
+pre { padding: .8rem; background: #e9ece6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.checklist { max-width: 37rem; margin: 1.5rem 0; padding: 1rem; border: 1px solid #cbd6cd; border-radius: .45rem; }
+.checklist legend { font-weight: 700; }
+.checklist label { display: flex; align-items: baseline; gap: .6rem; padding: .4rem; cursor: pointer; }
+.checklist input { accent-color: #245642; }
+button { font: inherit; padding: .5rem .85rem; background: #245642; color: white; border: 0; border-radius: .45rem; cursor: pointer; }
+</style>
+</head>
+<body>
+  <nav aria-label="Материалы занятия"><a href="../index.html#s7">← К слайду 7</a>
+    <a href="project-samovyvoz.md" download>Скачать исходный Markdown</a></nav>
+  <main><h1>Самовывоз из пункта выдачи</h1><div class="content">
+      <p>Учебная карточка. Поставьте галочку рядом с выполненным действием, затем скачайте обновлённую копию Markdown.</p>
+      <fieldset class="checklist"><legend>Передача результатов</legend><label><input type="checkbox" data-line="25" checked> Результаты отправлены заказчику. 16 ноября, со слов исследователя.</label><label><input type="checkbox" data-line="26"> Проект загружен в библиотеку.</label></fieldset>
+      <p id="progress" role="status"></p>
+      <button type="button" id="save">Скачать карточку с отметками</button>
+    </div></main>
+<script>
+const data = {"card": "---\nимя: Самовывоз из пункта выдачи\nstatus: ongoing\nисследователь: Михаил (демо)\nследующий_шаг: Уточнить, загружен ли проект в библиотеку\nза_кем_шаг: Исследователь\nдедлайн: 2026-11-20\n---\n\nВымышленный проект. Выводы о том, как пользователи выбирают пункт выдачи, показали команде 16 ноября.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [x] 2. Брифинг проведён · Ответственный: Исследователь\n- [x] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [x] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [x] 5. Поле завершено · Ответственный: Исследователь\n- [x] 6. Анализ готов · Ответственный: Исследователь\n- [x] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [x] 8. Презентация проведена · Ответственный: Исследователь\n- [ ] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [x] Результаты отправлены заказчику. 16 ноября, со слов исследователя.\n- [ ] Проект загружен в библиотеку.\n", "filename": "project-samovyvoz.md"};
+const inputs = [...document.querySelectorAll('.checklist input')];
+function updateCount() {
+  const count = inputs.filter(input => input.checked).length;
+  document.getElementById('progress').textContent = `Отмечено ${count} из ${inputs.length}`;
+}
+for (const input of inputs) input.addEventListener('change', updateCount);
+updateCount();
+document.getElementById('save').addEventListener('click', () => {
+  const lines = data.card.split('\n');
+  for (const input of inputs) {
+    const index = Number(input.dataset.line);
+    lines[index] = lines[index].replace(/^(- \[)[ xX](\])/, `$1${input.checked ? 'x' : ' '}$2`);
+  }
+  const url = URL.createObjectURL(new Blob([lines.join('\n')], { type: 'text/markdown;charset=utf-8' }));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = data.filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+</script>
+</body>
+</html>

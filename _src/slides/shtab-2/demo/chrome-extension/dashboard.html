@@ -20,10 +20,14 @@
     <div class="actions views">
       <button type="button" id="overview" aria-pressed="true">Обзор</button>
       <button type="button" id="active" aria-pressed="false">Мой Ongoing</button>
-      <label id="filter" hidden>Исследователь <select id="researcher"><option value="">Все</option></select></label>
     </div>
   </header>
   <p id="feedback" role="status"></p>
+  <div id="stage-nav" class="actions" hidden>
+    <span id="stage-hint">Прокрутите доску вправо, чтобы увидеть следующие стадии</span>
+    <button type="button" id="previous-stages" aria-label="Предыдущие стадии" aria-controls="board">←</button>
+    <button type="button" id="next-stages" aria-label="Следующие стадии" aria-controls="board">→</button>
+  </div>
   <main id="board" aria-label="Проекты"></main>
   <details id="issues" hidden>
     <summary>Что нужно настроить</summary>
