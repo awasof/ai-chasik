@@ -28,6 +28,16 @@ function labeled(parent, label, value, late = false) {
   parent.append(p);
 }
 
+function appendChecklist(parent, label, items) {
+  if (!items.length) return;
+  const details = element("details");
+  const complete = items.filter(item => item.done).length;
+  const list = element("ul");
+  for (const item of items) list.append(element("li", (item.done ? "Готово · " : "Открыто · ") + item.text));
+  details.append(element("summary", `${label} · ${complete} из ${items.length}`), list);
+  parent.append(details);
+}
+
 function render({ cards, issues }, today) {
   $("board").replaceChildren(...columns.map(([id, title]) => {
     const section = element("section");
@@ -42,14 +52,9 @@ function render({ cards, issues }, today) {
       labeled(article, "За кем", card.owner);
       labeled(article, "Срок", formatDate(card.deadline), card.deadline < today);
       if (card.effectDone) article.append(element("p", "Эффект зафиксирован"));
-      if (card.checklist.length) {
-        const details = element("details");
-        const complete = card.checklist.filter(item => item.done).length;
-        const list = element("ul");
-        for (const item of card.checklist) list.append(element("li", (item.done ? "Готово · " : "Открыто · ") + item.text));
-        details.append(element("summary", `Чек-лист · ${complete} из ${card.checklist.length}`), list);
-        article.append(details);
-      }
+      appendChecklist(article, "Стадии проекта", card.stages);
+      appendChecklist(article, "Передача результатов", card.handoff);
+      appendChecklist(article, "Чек-лист действий", card.checklist);
       section.append(article);
     }
     return section;

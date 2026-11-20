@@ -22,7 +22,7 @@ TREE = '''<pre class="x-tree">shtab/
     ├── _template/          <i>шаблон проекта</i>
     ├── avtoplatezh-zhkh/
     └── _done/              <i>закрытые</i>
-<span class="later">┄┄ часик 2: папки стадий внутри проекта</span></pre>'''
+<span class="later">┄┄ часик 2: список стадий в карточке проекта</span></pre>'''
 
 
 def filemock(name, rows, later=None):

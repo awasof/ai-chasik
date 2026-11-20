@@ -1,6 +1,7 @@
 from datetime import date
 from html import escape
 from pathlib import Path
+import re
 
 
 ROOT = Path(__file__).resolve().parent
@@ -11,10 +12,17 @@ COLUMNS = (
 )
 
 
+def task_section(body, title):
+    _, _, section = body.partition(f"\n## {title}\n")
+    section = section.split("\n## ", 1)[0]
+    return [(mark.lower() == "x", label) for mark, label in
+            re.findall(r"(?m)^- \[([ xX])\] (.+)$", section)]
+
+
 def read_card(path):
     """Читаем шапку демо-карточки: по одному полю «ключ: значение» на строку."""
     opening, _, rest = path.read_text(encoding="utf-8").partition("\n")
-    header, end, _ = rest.partition("\n---\n")
+    header, end, body = rest.partition("\n---\n")
     if opening != "---" or not end:
         raise ValueError(f"В {path} отсутствует шапка карточки")
     fields = {}
@@ -27,6 +35,16 @@ def read_card(path):
         fields[key.strip()] = value.strip().strip("\"'")
     if not fields.get("имя") or fields.get("status") not in dict(COLUMNS):
         raise ValueError(f"В {path} проверьте поля «имя» и «status»")
+    stages = task_section(body, "Стадии проекта")
+    if stages:
+        next_stage = next((re.sub(r"^\d+\.\s+", "", label) for done, label in stages if not done), "")
+        handoff = task_section(body, "Передача результатов")
+        if fields["status"] == "ongoing" and next_stage in ("", "Эффект зафиксирован") and any(not done for done, _ in handoff):
+            next_stage = "Передача результатов"
+        fields["стадия"] = next_stage
+        fields["прогресс_стадий"] = f"{sum(done for done, _ in stages)} из {len(stages)}"
+        if any(done and re.match(r"^(?:\d+\.\s+)?Эффект зафиксирован\b", label, re.I) for done, label in stages):
+            fields["эффект"] = "зафиксирован"
     return fields
 
 
@@ -38,6 +56,8 @@ def render_card(path, fields):
                        ("следующий_шаг", "Следующий шаг"), ("за_кем_шаг", "За кем")):
         if fields.get(key) and not (key == "стадия" and fields.get("эффект") == "зафиксирован"):
             content.append(f"<p><b>{label}</b> {escape(fields[key])}</p>")
+    if fields.get("прогресс_стадий"):
+        content.append(f'<p class="stage-progress"><b>Стадии проекта</b> {escape(fields["прогресс_стадий"])}</p>')
     for key, label in (("дедлайн", "Срок"), ("проверка_эффекта", "Проверка эффекта")):
         if value := fields.get(key):
             due = date.fromisoformat(value)

@@ -17,7 +17,10 @@ export function parseCard(text, folder) {
   const status = fields.status?.toLowerCase();
   if (!columns.some(([id]) => id === status)) throw Error("Укажите status: todo, ongoing или done");
 
+  const stages = [];
+  const handoff = [];
   const checklist = [];
+  let section = checklist;
   let fence = "";
   for (const line of lines.slice(end + 1)) {
     const mark = line.match(/^\s*(`{3,}|~{3,})/);
@@ -27,22 +30,35 @@ export function parseCard(text, folder) {
       continue;
     }
     if (fence) continue;
+    const title = line.match(/^#{1,2}\s+(.+?)\s*#*\s*$/)?.[1].toLowerCase();
+    if (title) {
+      section = title === "стадии проекта" ? stages : title === "передача результатов" ? handoff : checklist;
+      continue;
+    }
     const m = line.match(/^\s*(?:[-+*]|\d+\.)\s+\[([ xX])\]\s+(.+)/);
-    if (m) checklist.push({ done: m[1] !== " ", text: m[2] });
+    if (m) section.push({ done: m[1] !== " ", text: m[2] });
   }
 
+  const firstOpen = stages.find(item => !item.done);
+  const nextStage = firstOpen?.text.replace(/^\d+\.\s+/, "");
+  const needsHandoff = status === "ongoing" && handoff.some(item => !item.done)
+    && (!nextStage || nextStage === "Эффект зафиксирован");
+  const stage = stages.length ? (needsHandoff ? "Передача результатов" : nextStage) : fields.стадия;
+  const effectDone = stages.length
+    ? stages.some(item => item.done && /^(?:\d+\.\s+)?Эффект зафиксирован(?:$|[\s.,;:—–-])/i.test(item.text))
+    : fields.эффект === "зафиксирован";
   return {
-    folder, status, checklist,
+    folder, status, stages, handoff, checklist,
     name: fields.имя || fields.name || folder,
     number: fields.rp || fields.номер,
-    stage: fields.стадия,
+    stage,
     next: fields.следующий_шаг,
     owner: fields.за_кем_шаг,
     deadline: fields.дедлайн,
     reminder: fields.напомнить,
     reminderText: fields.напоминание,
     effectDate: fields.проверка_эффекта,
-    effectDone: fields.эффект === "зафиксирован",
+    effectDone,
   };
 }
 

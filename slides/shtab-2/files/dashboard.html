@@ -29,16 +29,16 @@
 <body>
 <header><h1>Штаб исследователя</h1><p>Учебный дашборд с вымышленными проектами</p><button type="button" id="confirm-demo" aria-pressed="false">Показать переход в Done</button>
 <p id="demo-result" role="status"></p></header>
-<main><section><h2>To do</h2><article><h3><a href="project-dostavka.md">Первый заказ с доставкой</a></h3><p><b>На очереди</b> Бриф получен</p><p><b>Следующий шаг</b> Разобрать бриф и предложить время брифинга</p><p><b>За кем</b> Исследователь</p><p><b>Срок</b> 23.11.2026</p></article></section>
-<section><h2>Ongoing</h2><article><h3><a href="project-samovyvoz.md">Самовывоз из пункта выдачи</a></h3><p><b>На очереди</b> Передача результатов</p><p><b>Следующий шаг</b> Уточнить, загружен ли проект в библиотеку</p><p><b>За кем</b> Исследователь</p><p><b>Срок</b> 20.11.2026</p></article><article><h3><a href="project-vozvrat.md">Возврат заказа в приложении</a></h3><p><b>На очереди</b> Анализ проверен лидом</p><p><b>Следующий шаг</b> Получить подтверждение лида по выводам</p><p><b>За кем</b> Лид</p><p><b>Срок</b> 19.11.2026</p></article></section>
-<section><h2>Done — контроль эффекта</h2><article><h3><a href="project-poisk.md">Поиск по каталогу</a></h3><p><b>На очереди</b> Эффект зафиксирован</p><p><b>Следующий шаг</b> Уточнить, какие рекомендации вошли в работу</p><p><b>За кем</b> Заказчик</p><p><b>Проверка эффекта</b> 26.11.2026</p></article><article><h3><a href="project-uvedomleniya.md">Уведомления о доставке</a></h3><p><b>Эффект зафиксирован</b></p></article></section></main>
+<main><section><h2>To do</h2><article><h3><a href="project-dostavka.md">Первый заказ с доставкой</a></h3><p><b>На очереди</b> Брифинг проведён</p><p><b>Следующий шаг</b> Разобрать бриф и предложить время брифинга</p><p><b>За кем</b> Исследователь</p><p class="stage-progress"><b>Стадии проекта</b> 1 из 9</p><p><b>Срок</b> 23.11.2026</p></article></section>
+<section><h2>Ongoing</h2><article><h3><a href="project-samovyvoz.md">Самовывоз из пункта выдачи</a></h3><p><b>На очереди</b> Передача результатов</p><p><b>Следующий шаг</b> Уточнить, загружен ли проект в библиотеку</p><p><b>За кем</b> Исследователь</p><p class="stage-progress"><b>Стадии проекта</b> 8 из 9</p><p><b>Срок</b> 20.11.2026</p></article><article><h3><a href="project-vozvrat.md">Возврат заказа в приложении</a></h3><p><b>На очереди</b> Анализ проверен лидом</p><p><b>Следующий шаг</b> Получить подтверждение лида по выводам</p><p><b>За кем</b> Лид</p><p class="stage-progress"><b>Стадии проекта</b> 6 из 9</p><p class="late"><b>Срок</b> 19.11.2026</p></article></section>
+<section><h2>Done — контроль эффекта</h2><article><h3><a href="project-poisk.md">Поиск по каталогу</a></h3><p><b>На очереди</b> Эффект зафиксирован</p><p><b>Следующий шаг</b> Уточнить, какие рекомендации вошли в работу</p><p><b>За кем</b> Заказчик</p><p class="stage-progress"><b>Стадии проекта</b> 8 из 9</p><p><b>Проверка эффекта</b> 26.11.2026</p></article><article><h3><a href="project-uvedomleniya.md">Уведомления о доставке</a></h3><p class="stage-progress"><b>Стадии проекта</b> 9 из 9</p><p><b>Эффект зафиксирован</b></p></article></section></main>
 <script>
 const button = document.querySelector('#confirm-demo');
 const result = document.querySelector('#demo-result');
 const card = document.querySelector('a[href="project-samovyvoz.md"]').closest('article');
 const ongoing = card.parentElement;
 const done = document.querySelector('main section:last-child');
-const initialDetails = [...card.querySelectorAll('p')];
+const initialDetails = [...card.querySelectorAll('p:not(.stage-progress)')];
 const effect = document.createElement('p');
 effect.textContent = 'Проверка эффекта · 01.12.2026';
 

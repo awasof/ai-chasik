@@ -19,7 +19,7 @@ const result = document.querySelector('#demo-result');
 const card = document.querySelector('a[href="project-samovyvoz.md"]').closest('article');
 const ongoing = card.parentElement;
 const done = document.querySelector('main section:last-child');
-const initialDetails = [...card.querySelectorAll('p')];
+const initialDetails = [...card.querySelectorAll('p:not(.stage-progress)')];
 const effect = document.createElement('p');
 effect.textContent = 'Проверка эффекта · 01.12.2026';
 
