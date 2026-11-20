@@ -37,10 +37,19 @@ def read_card(path):
         raise ValueError(f"В {path} проверьте поля «имя» и «status»")
     stages = task_section(body, "Стадии проекта")
     if stages:
-        next_stage = next((re.sub(r"^\d+\.\s+", "", label) for done, label in stages if not done), "")
+        pending = next((label for done, label in stages if not done), "")
+        label, *notes = pending.split(" · ")
+        next_stage = re.sub(r"^\d+\.\s+", "", label)
         handoff = task_section(body, "Передача результатов")
         if fields["status"] == "ongoing" and next_stage in ("", "Эффект зафиксирован") and any(not done for done, _ in handoff):
             next_stage = "Передача результатов"
+        else:
+            for note in notes:
+                key, _, value = note.partition(": ")
+                if key == "Ответственный":
+                    fields["ответственный_за_стадию"] = value
+                elif key == "Подтверждает":
+                    fields["подтверждает_стадию"] = value
         fields["стадия"] = next_stage
         fields["прогресс_стадий"] = f"{sum(done for done, _ in stages)} из {len(stages)}"
         if any(done and re.match(r"^(?:\d+\.\s+)?Эффект зафиксирован\b", label, re.I) for done, label in stages):
@@ -53,7 +62,8 @@ def render_card(path, fields):
     href = escape(path.relative_to(ROOT).as_posix())
     content = []
     for key, label in (("rp", "Номер"), ("стадия", "На очереди"),
-                       ("следующий_шаг", "Следующий шаг"), ("за_кем_шаг", "За кем")):
+                       ("ответственный_за_стадию", "Ведёт стадию"), ("подтверждает_стадию", "Подтверждает"),
+                       ("следующий_шаг", "Следующий шаг"), ("за_кем_шаг", "За кем шаг")):
         if fields.get(key) and not (key == "стадия" and fields.get("эффект") == "зафиксирован"):
             content.append(f"<p><b>{label}</b> {escape(fields[key])}</p>")
     if fields.get("прогресс_стадий"):

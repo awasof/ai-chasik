@@ -48,8 +48,10 @@ function render({ cards, issues }, today) {
       article.append(element("h3", card.name));
       labeled(article, "Номер", card.number);
       labeled(article, "На очереди", card.effectDone ? null : card.stage);
+      labeled(article, "Ведёт стадию", card.stageOwner);
+      labeled(article, "Подтверждает", card.stageApprover);
       labeled(article, "Следующий шаг", card.next);
-      labeled(article, "За кем", card.owner);
+      labeled(article, "За кем шаг", card.owner);
       labeled(article, "Срок", formatDate(card.deadline), card.deadline < today);
       if (card.effectDone) article.append(element("p", "Эффект зафиксирован"));
       appendChecklist(article, "Стадии проекта", card.stages);

@@ -4,6 +4,17 @@ export const columns = [
   ["done", "Done — контроль эффекта"],
 ];
 
+function stageInfo(item) {
+  if (!item) return {};
+  const [label, ...notes] = item.text.split(" · ");
+  const info = { title: label.replace(/^\d+\.\s+/, "") };
+  for (const note of notes) {
+    const m = note.match(/^(Ответственный|Подтверждает):\s*(.+)$/i);
+    if (m) info[m[1].toLowerCase()] = m[2].trim();
+  }
+  return info;
+}
+
 export function parseCard(text, folder) {
   const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
   const end = lines.indexOf("---", 1);
@@ -39,11 +50,10 @@ export function parseCard(text, folder) {
     if (m) section.push({ done: m[1] !== " ", text: m[2] });
   }
 
-  const firstOpen = stages.find(item => !item.done);
-  const nextStage = firstOpen?.text.replace(/^\d+\.\s+/, "");
+  const nextStage = stageInfo(stages.find(item => !item.done));
   const needsHandoff = status === "ongoing" && handoff.some(item => !item.done)
-    && (!nextStage || nextStage === "Эффект зафиксирован");
-  const stage = stages.length ? (needsHandoff ? "Передача результатов" : nextStage) : fields.стадия;
+    && (!nextStage.title || nextStage.title === "Эффект зафиксирован");
+  const stage = stages.length ? (needsHandoff ? "Передача результатов" : nextStage.title) : fields.стадия;
   const effectDone = stages.length
     ? stages.some(item => item.done && /^(?:\d+\.\s+)?Эффект зафиксирован(?:$|[\s.,;:—–-])/i.test(item.text))
     : fields.эффект === "зафиксирован";
@@ -52,6 +62,8 @@ export function parseCard(text, folder) {
     name: fields.имя || fields.name || folder,
     number: fields.rp || fields.номер,
     stage,
+    stageOwner: needsHandoff ? undefined : nextStage.ответственный,
+    stageApprover: needsHandoff ? undefined : nextStage.подтверждает,
     next: fields.следующий_шаг,
     owner: fields.за_кем_шаг,
     deadline: fields.дедлайн,
