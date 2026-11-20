@@ -68,24 +68,33 @@ def page(folder, name, title, content, source, slide, script=""):
     (folder / name).write_text(html, encoding="utf-8")
 
 
-def checklist_page(folder, card, source, title):
-    heading = "## Передача результатов\n"
-    before, separator, after = card.partition(heading)
-    section, _, _ = after.partition("\n## ")
-    if not separator or not section.strip():
-        raise ValueError(f"Нет раздела «Передача результатов» в {source}")
-    first_line = (before + heading).count("\n")
-    labels = []
-    for index, line in enumerate(section.splitlines(), start=first_line):
-        task = re.fullmatch(r"- \[([ xX])\] (.+)", line)
-        if task:
+def checklist_page(folder, card, body, summary, source, title):
+    intro, *sections = re.split(r"(?m)(?=^## )", body)
+    first_line = card.count("\n") - body.count("\n") + intro.count("\n")
+    groups = []
+    for section in sections:
+        heading, _, text = section.partition("\n")
+        rows = []
+        prose = []
+        for index, line in enumerate(text.splitlines(), start=first_line + 1):
+            task = re.fullmatch(r"- \[([ xX])\] (.+)", line)
+            if not task:
+                prose.append(line)
+                continue
+            if prose:
+                rows.append(markdown("\n".join(prose)))
+                prose.clear()
             checked = " checked" if task[1] != " " else ""
-            labels.append(f'<label><input type="checkbox" data-line="{index}"{checked}> {escape(task[2])}</label>')
-    if not labels:
-        raise ValueError(f"Нет галочек передачи результатов в {source}")
+            rows.append(f'<label><input type="checkbox" data-line="{index}"{checked}><span>{escape(task[2])}</span></label>')
+        if prose:
+            rows.append(markdown("\n".join(prose)))
+        groups.append(f'<fieldset class="checklist"><legend>{escape(heading[3:])}</legend>{"".join(rows)}</fieldset>')
+        first_line += section.count("\n")
     content = f"""
-      <p>Учебная карточка. Поставьте галочку рядом с выполненным действием, затем скачайте обновлённую копию Markdown.</p>
-      <fieldset class="checklist"><legend>Передача результатов</legend>{''.join(labels)}</fieldset>
+      {summary}
+      {markdown(intro)}
+      <p>Отметьте завершённые стадии и действия. Скачайте копию карточки и при необходимости сверьте статус по Team Rules.</p>
+      {''.join(groups)}
       <p id="progress" role="status"></p>
       <button type="button" id="save">Скачать карточку с отметками</button>
     """
@@ -136,10 +145,11 @@ def build_previews(folder):
     status = {"todo": "To do", "ongoing": "Ongoing", "done": "Done"}.get(fields.get("status"), "")
     rows = [("Статус", f"{status} · status: {fields.get('status', '')}"),
             ("Исследователь", fields.get("исследователь")),
-            ("Следующий шаг", fields.get("следующий_шаг")), ("За кем шаг", fields.get("за_кем_шаг"))]
+            ("Следующий шаг", fields.get("следующий_шаг")), ("За кем шаг", fields.get("за_кем_шаг")),
+            ("Срок", fields.get("дедлайн"))]
     summary = "<dl>" + "".join(f"<dt>{escape(k)}</dt><dd>{escape(v)}</dd>" for k, v in rows if v) + "</dl>"
     page(folder, "project-card.html", fields.get("имя", "Карточка проекта"), summary + markdown(body), source, 6)
-    checklist_page(folder, card, source, fields.get("имя", "Учебный чек-лист"))
+    checklist_page(folder, card, body, summary, source, fields.get("имя", "Учебный чек-лист"))
 
     guide = (folder / "chrome-setup.md").read_text(encoding="utf-8").split("\n", 1)[1]
     page(folder, "chrome-setup.html", "Как подключить свой штаб к дашборду в Chrome", markdown(guide), "chrome-setup.md", 12)
