@@ -1,63 +1,677 @@
 <!doctype html>
 <html lang="ru">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="noindex, nofollow">
-<title>Дашборд штаба — учебное демо</title>
-<style>
-  * { box-sizing: border-box; }
-  body { margin: 0 auto; max-width: 76rem; padding: clamp(1rem, 4vw, 3rem);
-         font: 16px/1.5 system-ui, sans-serif; color: #1d302a; background: #f3f6f4; }
-  h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.035em; }
-  header { margin-bottom: 2rem; }
-  header p { color: #4b5c54; }
-  main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
-  section { padding: .95rem; border-top: 3px solid #356951; border-radius: .35rem;
-            background: #e5ede7; min-width: 0; }
-  h2 { margin: 0 0 .8rem; font-size: 1.1rem; }
-  article { margin: .65rem 0 0; padding: .85rem; background: white; border: 1px solid #cad8cf;
-            border-radius: .35rem; overflow-wrap: anywhere; }
-  h3 { margin: 0 0 .55rem; font-size: 1rem; }
-  article p { margin: .35rem 0 0; font-size: .9rem; }
-  article b { color: #354a40; }
-  a { color: #1c5740; text-underline-offset: .15em; }
-  .late, .late b { color: #a32020; }
-  @media (max-width: 750px) { main { grid-template-columns: 1fr; } }
-  button { font: inherit; padding: .45rem .8rem; border: 1px solid #356951;
-           border-radius: .35rem; color: #1d302a; background: white; cursor: pointer; }
-</style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Штаб исследователя · дашборд</title>
+  <style>
+:root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #1d302a; background: #f3f6f4; }
+* { box-sizing: border-box; }
+body { margin: 0 auto; max-width: 80rem; padding: clamp(1rem, 4vw, 3rem); }
+header { margin-bottom: 1.5rem; }
+h1 { margin: 0; font-size: clamp(2rem, 4vw, 3.5rem); letter-spacing: -.04em; line-height: 1.08; }
+h2 { margin: 0 0 .75rem; font-size: 1.12rem; }
+h3 { margin: 0 0 .55rem; font-size: 1.05rem; line-height: 1.3; }
+.intro, #status { color: #465d52; }
+.actions { display: flex; flex-wrap: wrap; gap: .65rem; }
+button { font: inherit; color: #1d302a; background: white; border: 1px solid #537568; border-radius: .45rem; padding: .48rem .8rem; cursor: pointer; }
+#connect { color: #fff; background: #245642; }
+button:disabled { opacity: .55; cursor: default; }
+button:focus-visible, summary:focus-visible { outline: 2px solid #205a96; outline-offset: 3px; }
+#board { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+#board section { padding: 1rem; border-top: 3px solid #356951; border-radius: .45rem; background: #e5ede7; min-width: 0; }
+article { margin: .6rem 0 0; padding: .9rem; border: 1px solid #c6d6cd; border-radius: .45rem; background: white; overflow-wrap: anywhere; }
+article p { margin: .25rem 0; font-size: .92rem; }
+article b { color: #40574b; }
+details { margin-top: .6rem; }
+summary { cursor: pointer; }
+ul { padding-left: 1.3rem; margin: .45rem 0 0; }
+.late, .late b { color: #a32020; }
+@media (max-width: 760px) { #board { grid-template-columns: 1fr; } }
+[hidden] { display: none !important; }
+.views { align-items: center; }
+.views button[aria-pressed="true"] { color: white; background: #245642; }
+#board.active { grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); align-items: stretch; }
+#board .empty-stage { border-top: 1px solid #cad8cf; padding: .65rem 1rem; }
+#board .empty-stage h2 { color: #465d52; font-size: .97rem; margin: 0; }
+.card-link { padding: 0; border: 0; background: transparent; text-align: left; color: #1c5740; text-decoration: underline; text-underline-offset: .17em; font-weight: 670; }
+.column-link { font-weight: 750; }
+select, input:not([type="checkbox"]) { font: inherit; padding: .35rem .5rem; border: 1px solid #789386; border-radius: .3rem; background: white; color: #1d302a; }
+dialog { width: min(43rem, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); border: 1px solid #91a59b; border-radius: .65rem; padding: clamp(1rem, 3vw, 1.7rem); color: #1d302a; }
+dialog::backdrop { background: #142c26a0; }
+.project-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; margin-bottom: .5rem; }
+.path { overflow-wrap: anywhere; font-family: ui-monospace, monospace; font-size: .87rem; color: #465d52; }
+#project-state p { margin: .25rem 0; }
+fieldset { min-width: 0; margin: .9rem 0 0; border-radius: .4rem; border: 1px solid #cad8cf; }
+legend { font-weight: 700; padding: 0 .3rem; }
+fieldset label { display: flex; gap: .55rem; align-items: baseline; padding: .3rem 0; overflow-wrap: anywhere; }
+fieldset input { flex: 0 0 auto; accent-color: #245642; }
+#pending { margin-top: 1rem; padding: .8rem; background: #eef4ef; border-radius: .4rem; }
+#pending label { display: grid; gap: .25rem; margin: .55rem 0; }
+#save { margin-top: .35rem; color: white; background: #245642; }
+#feedback:empty, #project-message:empty { display: none; }
+#project-message { color: #a32020; }
+  </style>
+</head>
 <body>
-<header><h1>Штаб исследователя</h1><p>Учебный дашборд с вымышленными проектами</p><button type="button" id="confirm-demo" aria-pressed="false">Показать переход в Done</button>
-<p id="demo-result" role="status"></p></header>
-<main><section><h2>To do</h2><article><h3><a href="project-dostavka.md">Первый заказ с доставкой</a></h3><p><b>На очереди</b> Брифинг проведён</p><p><b>Ведёт стадию</b> Исследователь</p><p><b>Следующий шаг</b> Разобрать бриф и предложить время брифинга</p><p><b>За кем шаг</b> Исследователь</p><p class="stage-progress"><b>Стадии проекта</b> 1 из 9</p><p><b>Срок</b> 23.11.2026</p></article></section>
-<section><h2>Ongoing</h2><article><h3><a href="project-samovyvoz.md">Самовывоз из пункта выдачи</a></h3><p><b>На очереди</b> Передача результатов</p><p><b>Следующий шаг</b> Уточнить, загружен ли проект в библиотеку</p><p><b>За кем шаг</b> Исследователь</p><p class="stage-progress"><b>Стадии проекта</b> 8 из 9</p><p><b>Срок</b> 20.11.2026</p></article><article><h3><a href="project-vozvrat.md">Возврат заказа в приложении</a></h3><p><b>На очереди</b> Анализ проверен лидом</p><p><b>Ведёт стадию</b> Исследователь</p><p><b>Подтверждает</b> Лид</p><p><b>Следующий шаг</b> Получить подтверждение лида по выводам</p><p><b>За кем шаг</b> Лид</p><p class="stage-progress"><b>Стадии проекта</b> 6 из 9</p><p class="late"><b>Срок</b> 19.11.2026</p></article></section>
-<section><h2>Done — контроль эффекта</h2><article><h3><a href="project-poisk.md">Поиск по каталогу</a></h3><p><b>На очереди</b> Эффект зафиксирован</p><p><b>Ведёт стадию</b> Исследователь</p><p><b>Подтверждает</b> Заказчик</p><p><b>Следующий шаг</b> Уточнить, какие рекомендации вошли в работу</p><p><b>За кем шаг</b> Заказчик</p><p class="stage-progress"><b>Стадии проекта</b> 8 из 9</p><p><b>Проверка эффекта</b> 26.11.2026</p></article><article><h3><a href="project-uvedomleniya.md">Уведомления о доставке</a></h3><p class="stage-progress"><b>Стадии проекта</b> 9 из 9</p><p><b>Эффект зафиксирован</b></p></article></section></main>
-<script>
-const button = document.querySelector('#confirm-demo');
-const result = document.querySelector('#demo-result');
-const card = document.querySelector('a[href="project-samovyvoz.md"]').closest('article');
-const ongoing = card.parentElement;
-const done = document.querySelector('main section:last-child');
-const initialDetails = [...card.querySelectorAll('p:not(.stage-progress)')];
-const effect = document.createElement('p');
-effect.textContent = 'Проверка эффекта · 01.12.2026';
+  <header>
+    <h1>Штаб исследователя</h1>
+    <p class="intro">Откройте обзор или перейдите к текущим стадиям проектов.</p>
+    <div class="actions">
+      <button type="button" id="connect">Подключить папку штаба</button>
+      <button type="button" id="resume" hidden>Разрешить чтение</button>
+      <button type="button" id="refresh" disabled>Обновить</button>
+    </div>
+    <p id="status" role="status">Выберите папку, в которой находится projects/.</p>
+    <div class="actions views">
+      <button type="button" id="overview" aria-pressed="true">Обзор</button>
+      <button type="button" id="active" aria-pressed="false">Мой Ongoing</button>
+      <label id="filter" hidden>Исследователь <select id="researcher"><option value="">Все</option></select></label>
+    </div>
+  </header>
+  <p id="feedback" role="status"></p>
+  <main id="board" aria-label="Проекты"></main>
+  <details id="issues" hidden>
+    <summary>Что нужно настроить</summary>
+    <ul id="issue-list"></ul>
+  </details>
+  <dialog id="project" aria-labelledby="project-title">
+    <header class="project-head">
+      <h2 id="project-title"></h2>
+      <button type="button" id="close-project">Закрыть</button>
+    </header>
+    <p id="project-path" class="path"></p>
+    <div id="project-state"></div>
+    <form id="project-form">
+      <div id="project-checks"></div>
+      <section id="pending" aria-label="Подтвердить изменение" hidden>
+        <h3>Проверьте изменение перед сохранением</h3>
+        <p id="preview" role="status"></p>
+        <label>Чем подтверждено <input id="evidence" maxlength="400" placeholder="Например, дата и ссылка на сообщение"></label>
+        <div id="next-fields">
+          <label>Следующий шаг <input id="next-step" maxlength="240"></label>
+          <label>За кем шаг <input id="next-owner" maxlength="120"></label>
+        </div>
+        <label id="effect-field" hidden>Дата контроля эффекта <input id="effect-date" type="date"></label>
+        <button type="submit" id="save">Сохранить в карточке</button>
+      </section>
+      <p id="project-message" role="status"></p>
+    </form>
+  </dialog>
+<script type="module">
+window.SHTAB_DEMO = {"cards": {"dostavka": "---\nимя: Первый заказ с доставкой\nstatus: todo\nследующий_шаг: Разобрать бриф и предложить время брифинга\nза_кем_шаг: Исследователь\nдедлайн: 2026-11-23\n---\n\nВымышленный проект. Команда хочет понять, где люди теряются при первом заказе. Бриф поступил, но его ещё не брали в работу.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [ ] 2. Брифинг проведён · Ответственный: Исследователь\n- [ ] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [ ] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [ ] 5. Поле завершено · Ответственный: Исследователь\n- [ ] 6. Анализ готов · Ответственный: Исследователь\n- [ ] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [ ] 8. Презентация проведена · Ответственный: Исследователь\n- [ ] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [ ] Результаты отправлены заказчику.\n- [ ] Проект загружен в библиотеку.\n", "poisk": "---\nимя: Поиск по каталогу\nstatus: done\nследующий_шаг: Уточнить, какие рекомендации вошли в работу\nза_кем_шаг: Заказчик\nпроверка_эффекта: 2026-11-26\n---\n\nВымышленный проект. Презентация проведена 12 ноября. Заказчику отправили отчёт, проект добавили в учебную библиотеку. Договорились вернуться к рекомендациям 26 ноября.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [x] 2. Брифинг проведён · Ответственный: Исследователь\n- [x] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [x] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [x] 5. Поле завершено · Ответственный: Исследователь\n- [x] 6. Анализ готов · Ответственный: Исследователь\n- [x] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [x] 8. Презентация проведена · Ответственный: Исследователь\n- [ ] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [x] Результаты отправлены заказчику.\n- [x] Проект загружен в библиотеку.\n", "samovyvoz": "---\nимя: Самовывоз из пункта выдачи\nstatus: ongoing\nисследователь: Михаил (демо)\nследующий_шаг: Уточнить, загружен ли проект в библиотеку\nза_кем_шаг: Исследователь\nдедлайн: 2026-11-20\n---\n\nВымышленный проект. Выводы о том, как пользователи выбирают пункт выдачи, показали команде 16 ноября.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [x] 2. Брифинг проведён · Ответственный: Исследователь\n- [x] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [x] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [x] 5. Поле завершено · Ответственный: Исследователь\n- [x] 6. Анализ готов · Ответственный: Исследователь\n- [x] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [x] 8. Презентация проведена · Ответственный: Исследователь\n- [ ] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [x] Результаты отправлены заказчику. 16 ноября, со слов исследователя.\n- [ ] Проект загружен в библиотеку.\n", "uvedomleniya": "---\nимя: Уведомления о доставке\nstatus: done\n---\n\nВымышленный проект. Результаты показали и отправили заказчику, проект добавили в учебную библиотеку. По итогам проверки команда обновила тексты двух уведомлений. Заказчик подтвердил это на встрече.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [x] 2. Брифинг проведён · Ответственный: Исследователь\n- [x] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [x] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [x] 5. Поле завершено · Ответственный: Исследователь\n- [x] 6. Анализ готов · Ответственный: Исследователь\n- [x] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [x] 8. Презентация проведена · Ответственный: Исследователь\n- [x] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [x] Результаты отправлены заказчику.\n- [x] Проект загружен в библиотеку.\n", "vozvrat": "---\nимя: Возврат заказа в приложении\nstatus: ongoing\nисследователь: Анна (демо)\nследующий_шаг: Получить подтверждение лида по выводам\nза_кем_шаг: Лид\nдедлайн: 2026-11-19\n---\n\nВымышленный проект. Исследователь подготовил выводы после шести юзабилити-сессий. В карточке зафиксирован готовый анализ, подтверждение лида пока не записано.\n\n## Стадии проекта\n\n- [x] 1. Бриф получен · Ответственный: Исследователь\n- [x] 2. Брифинг проведён · Ответственный: Исследователь\n- [x] 3. Дизайн утверждён · Ответственный: Исследователь · Подтверждает: Лид и заказчик\n- [x] 4. Инструмент утверждён · Ответственный: Исследователь · Подтверждает: Заказчик\n- [x] 5. Поле завершено · Ответственный: Исследователь\n- [x] 6. Анализ готов · Ответственный: Исследователь\n- [ ] 7. Анализ проверен лидом · Ответственный: Исследователь · Подтверждает: Лид\n- [ ] 8. Презентация проведена · Ответственный: Исследователь\n- [ ] 9. Эффект зафиксирован · Ответственный: Исследователь · Подтверждает: Заказчик\n\n## Передача результатов\n\n- [ ] Результаты отправлены заказчику.\n- [ ] Проект загружен в библиотеку.\n\n## Проверка анализа\n\n- [x] Собрать выводы и подкрепить их наблюдениями.\n- [ ] Получить подтверждение лида.\n- [ ] Зафиксировать дату и итог проверки в карточке.\n"}, "rules": {"startStages": ["Брифинг проведён"], "doneStages": ["Презентация проведена"], "doneChecks": ["Результаты отправлены заказчику", "Проект загружен в библиотеку"]}};
+const columns = [
+  ["todo", "To do"],
+  ["ongoing", "Ongoing"],
+  ["done", "Done — контроль эффекта"],
+];
 
-button.addEventListener('click', () => {
-  const confirmed = button.getAttribute('aria-pressed') === 'false';
-  button.setAttribute('aria-pressed', String(confirmed));
-  for (const detail of initialDetails) detail.hidden = confirmed;
-  if (confirmed) {
-    card.append(effect);
-    done.querySelector('h2').after(card);
-  } else {
-    effect.remove();
-    ongoing.querySelector('h2').after(card);
+function stageInfo(item) {
+  if (!item) return {};
+  const [label, ...notes] = item.text.split(" · ");
+  const info = { title: label.replace(/^\d+\.\s+/, "") };
+  for (const note of notes) {
+    const m = note.match(/^(Ответственный|Подтверждает):\s*(.+)$/i);
+    if (m) info[m[1].toLowerCase()] = m[2].trim();
   }
-  button.textContent = confirmed ? 'Вернуть исходный вид' : 'Показать переход в Done';
-  result.textContent = confirmed
-    ? 'Загрузку в библиотеку подтвердили. «Самовывоз» перешёл в Done.'
-    : '«Самовывоз» снова в Ongoing и ждёт подтверждения загрузки.';
+  return info;
+}
+
+const CHECK = /^(\s*(?:[-+*]|\d+\.)\s+)\[([ xX])\](\s+)(.+)/;
+const stageTitle = item => stageInfo(item).title;
+const taskTitle = item => item?.text.split(" · ")[0].replace(/\.(?:\s.*)?$/, "").trim();
+
+function parseCard(text, folder) {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
+  const end = lines.indexOf("---", 1);
+  if (lines[0] !== "---" || end < 0) throw Error("Добавьте шапку карточки");
+  const fields = Object.create(null);
+  for (const line of lines.slice(1, end)) {
+    const m = line.match(/^([^:#\s]+):\s*(.*)$/);
+    if (!m) continue;
+    fields[m[1]] = m[2].trim().replace(/^(['"])(.*)\1$/, "$2");
+  }
+  const status = fields.status?.toLowerCase();
+  if (!columns.some(([id]) => id === status)) throw Error("Укажите status: todo, ongoing или done");
+
+  const stages = [];
+  const handoff = [];
+  const checklist = [];
+  let section = checklist;
+  let fence = "";
+  for (let index = end + 1; index < lines.length; index++) {
+    const line = lines[index];
+    const mark = line.match(/^\s*(`{3,}|~{3,})/);
+    if (mark) {
+      if (!fence) fence = mark[1];
+      else if (mark[1][0] === fence[0] && mark[1].length >= fence.length) fence = "";
+      continue;
+    }
+    if (fence) continue;
+    const title = line.match(/^#{1,2}\s+(.+?)\s*#*\s*$/)?.[1].toLowerCase();
+    if (title) {
+      section = title === "стадии проекта" ? stages : title === "передача результатов" ? handoff : checklist;
+      continue;
+    }
+    const m = line.match(CHECK);
+    if (m) section.push({ done: m[2] !== " ", text: m[4], line: index });
+  }
+
+  const firstOpen = stages.findIndex(item => !item.done);
+  const nextStage = stageInfo(stages[firstOpen]);
+  const needsHandoff = status === "ongoing" && handoff.some(item => !item.done)
+    && (!nextStage.title || nextStage.title === "Эффект зафиксирован");
+  const stage = stages.length ? (needsHandoff ? "Передача результатов" : nextStage.title) : fields.стадия;
+  const effectDone = stages.length
+    ? stages.some(item => item.done && /^(?:\d+\.\s+)?Эффект зафиксирован(?:$|[\s.,;:—–-])/i.test(item.text))
+    : fields.эффект === "зафиксирован";
+  return {
+    folder, status, stages, handoff, checklist,
+    name: fields.имя || fields.name || folder,
+    researcher: fields.исследователь || fields.ответственный,
+    number: fields.rp || fields.номер,
+    stage,
+    stageOrder: needsHandoff ? (firstOpen < 0 ? stages.length : firstOpen) - 0.5
+      : firstOpen < 0 ? Number.MAX_SAFE_INTEGER : firstOpen,
+    stageOwner: needsHandoff ? undefined : nextStage.ответственный,
+    stageApprover: needsHandoff ? undefined : nextStage.подтверждает,
+    next: fields.следующий_шаг,
+    owner: fields.за_кем_шаг,
+    deadline: fields.дедлайн,
+    effectDate: fields.проверка_эффекта,
+    effectDone,
+  };
+}
+
+function parseRules(text) {
+  const rules = JSON.parse(text);
+  for (const key of ["startStages", "doneStages", "doneChecks"]) {
+    if (!Array.isArray(rules?.[key]) || !rules[key].length || rules[key].some(x => typeof x !== "string" || !x.trim())) {
+      throw Error(`Проверьте ${key} в dashboard-rules.json`);
+    }
+  }
+  return rules;
+}
+
+function haveAll(names, list, title) {
+  return names.every(name => list.some(item => item.done && title(item) === name));
+}
+
+function allowedItems(card, rules) {
+  const first = card.stages.find(item => !item.done);
+  const canCloseStage = first && (card.status === "done" || stageTitle(first) !== "Эффект зафиксирован");
+  const canHandoff = rules ? haveAll(rules.doneStages, card.stages, stageTitle)
+    : card.stages.some(item => item.done && stageTitle(item) === "Презентация проведена");
+  return [
+    ...(canCloseStage ? [first] : []),
+    ...(canHandoff ? card.handoff.filter(item => !item.done) : []),
+    ...card.checklist.filter(item => !item.done),
+  ];
+}
+
+function setField(lines, key, value) {
+  if (/[\r\n]/.test(value)) throw Error("Поле должно быть в одну строку");
+  const end = lines.indexOf("---", 1);
+  const index = lines.slice(1, end).findIndex(line => line.startsWith(`${key}:`));
+  if (index >= 0) lines[index + 1] = `${key}: ${value}`;
+  else if (value) lines.splice(end, 0, `${key}: ${value}`);
+}
+
+function planCheck(raw, folder, line, options = {}) {
+  const { rules, evidence = "", next, owner, effectDate, preview = false } = options;
+  const card = parseCard(raw, folder);
+  const item = allowedItems(card, rules).find(it => it.line === line);
+  if (!item) throw Error("Этот пункт сейчас нельзя отметить. Откройте карточку заново.");
+  const isStage = card.stages.includes(item);
+  const isHandoff = card.handoff.includes(item);
+  const requiresEvidence = isHandoff || !!(isStage && stageInfo(item).подтверждает);
+  if (requiresEvidence && !evidence.trim() && !preview) throw Error("Укажите, чем подтверждено выполнение");
+  const eol = raw.includes("\r\n") ? "\r\n" : "\n";
+  const lines = raw.split(/\r?\n/);
+  lines[line] = lines[line].replace(CHECK, "$1[x]$3$4");
+  if (evidence.trim()) {
+    if (/[\r\n]/.test(evidence)) throw Error("Подтверждение должно быть в одну строку");
+    lines[line] += ` · Подтверждение: ${evidence.trim()}`;
+  }
+  const checked = parseCard(lines.join(eol), folder);
+  let status = card.status;
+  if (rules && (isStage || isHandoff)) {
+    if (status === "todo" && haveAll(rules.startStages, checked.stages, stageTitle)) status = "ongoing";
+    if (status === "ongoing" && haveAll(rules.doneStages, checked.stages, stageTitle)
+        && haveAll(rules.doneChecks, checked.handoff, taskTitle)) status = "done";
+  }
+  if (status !== card.status) setField(lines, "status", status);
+  const future = parseCard(lines.join(eol), folder);
+  const actionChanged = future.status !== card.status || future.stage !== card.stage || isHandoff;
+  if (actionChanged) {
+    let suggestion = future.stage;
+    if (future.stage === "Передача результатов") suggestion = taskTitle(future.handoff.find(it => !it.done));
+    if (future.status === "done" && !future.effectDone) suggestion = "Проверить эффект";
+    setField(lines, "следующий_шаг", next ?? suggestion ?? "");
+    const suggestedOwner = future.stageOwner || (future.stage === "Передача результатов"
+      ? card.researcher || card.owner : undefined);
+    setField(lines, "за_кем_шаг", owner ?? suggestedOwner ?? "");
+  }
+  const needsEffectDate = status === "done" && card.status !== "done" && !future.effectDone;
+  if (needsEffectDate) {
+    const date = effectDate ?? card.effectDate ?? "";
+    if (!preview && !formatDate(date)) throw Error("Укажите дату проверки эффекта");
+    if (date) setField(lines, "проверка_эффекта", date);
+  }
+  const text = lines.join(eol);
+  return { text, card: parseCard(text, folder), requiresEvidence, actionChanged, needsEffectDate };
+}
+
+async function readCards(root) {
+  const projects = await root.getDirectoryHandle("projects");
+  const cards = [];
+  const issues = [];
+  for await (const entry of projects.values()) {
+    if (entry.kind !== "directory" || /^[_.]/.test(entry.name)) continue;
+    try {
+      const file = await entry.getFileHandle("README.md");
+      cards.push(parseCard(await (await file.getFile()).text(), entry.name));
+    } catch (error) {
+      if (error.name === "NotAllowedError" || error.name === "SecurityError") throw error;
+      const message = error.name === "NotFoundError" ? "Добавьте README.md" : error.message;
+      issues.push(`projects/${entry.name}/README.md · ${message}`);
+    }
+  }
+  cards.sort((a, b) => a.name.localeCompare(b.name, "ru"));
+  return { cards, issues };
+}
+
+function formatDate(value) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value || "");
+  if (!m) return "";
+  const date = new Date(value + "T00:00:00Z");
+  if (Number.isNaN(date.valueOf()) || date.toISOString().slice(0, 10) !== value) return "";
+  return `${m[3]}.${m[2]}.${m[1]}`;
+}
+
+
+const $ = id => document.getElementById(id);
+const connect = $("connect");
+const resume = $("resume");
+const refresh = $("refresh");
+const dialog = $("project");
+const form = $("project-form");
+const checklist = $("project-checks");
+const filter = $("researcher");
+const demo = window.SHTAB_DEMO;
+const memory = demo ? new Map(Object.entries(demo.cards)) : null;
+const labels = Object.fromEntries(columns);
+
+let root;
+let scope = "overview";
+let reading = false;
+let saving = false;
+let lastView = "";
+let snapshot = { cards: [], issues: [], rules: null };
+let project;
+let pending;
+
+function element(tag, text) {
+  const node = document.createElement(tag);
+  if (text) node.textContent = text;
+  return node;
+}
+
+function action(text, handler) {
+  const button = element("button", text);
+  button.type = "button";
+  button.addEventListener("click", handler);
+  return button;
+}
+
+function todayKey() {
+  const date = new Date();
+  const pad = n => String(n).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function labeled(parent, label, value, late = false) {
+  if (!value) return;
+  const p = element("p");
+  if (late) p.className = "late";
+  p.append(element("b", label), " · ", value);
+  parent.append(p);
+}
+
+function status(message) {
+  if ($("status").textContent !== message) $("status").textContent = message;
+}
+
+function cardSummary(card, detailed, today) {
+  const article = element("article");
+  const title = element("h3");
+  const open = action(card.name, () => void openProject(card.folder));
+  open.className = "card-link";
+  title.append(open);
+  article.append(title);
+  labeled(article, "Номер", card.number);
+  labeled(article, "На очереди", card.effectDone ? null : card.stage);
+  if (card.effectDone) article.append(element("p", "Эффект зафиксирован"));
+  if (card.status === "done" && !card.effectDone) {
+    labeled(article, "Контроль эффекта", formatDate(card.effectDate), card.effectDate < today);
+  }
+  if (detailed) {
+    if (card.stages.length) labeled(article, "Стадии", `${card.stages.filter(x => x.done).length} из ${card.stages.length}`);
+    labeled(article, "Исследователь", card.researcher);
+    labeled(article, "Ведёт стадию", card.stageOwner);
+    labeled(article, "Подтверждает", card.stageApprover);
+    labeled(article, "Следующий шаг", card.next);
+    labeled(article, "За кем шаг", card.owner);
+    labeled(article, "Срок", formatDate(card.deadline), card.deadline < today);
+  }
+  return article;
+}
+
+const researcherOf = card => card.researcher || card.stageOwner;
+
+function render() {
+  const { cards, issues } = snapshot;
+  const board = $("board");
+  const today = todayKey();
+  const active = cards.filter(card => card.status === "ongoing");
+  $("overview").setAttribute("aria-pressed", String(scope === "overview"));
+  $("active").setAttribute("aria-pressed", String(scope === "active"));
+  $("filter").hidden = scope !== "active";
+  const previous = filter.value;
+  const people = [...new Set(active.map(researcherOf).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ru"));
+  filter.replaceChildren(new Option("Все", ""), ...people.map(name => new Option(name, name)));
+  filter.value = people.includes(previous) ? previous : "";
+  board.className = scope;
+
+  if (scope === "overview") {
+    board.replaceChildren(...columns.map(([id, title]) => {
+      const section = element("section");
+      const group = cards.filter(card => card.status === id);
+      const heading = element("h2");
+      if (id === "ongoing") {
+        const open = action(`${title} · ${group.length}`, () => selectScope("active"));
+        open.className = "card-link column-link";
+        open.setAttribute("aria-label", `Открыть Ongoing, проектов: ${group.length}`);
+        heading.append(open);
+      } else {
+        heading.textContent = `${title} · ${group.length}`;
+      }
+      section.append(heading, ...group.map(card => cardSummary(card, false, today)));
+      if (!group.length) section.append(element("p", "Пока пусто"));
+      return section;
+    }));
+  } else {
+    const shown = active.filter(card => !filter.value || researcherOf(card) === filter.value);
+    const order = new Map();
+    for (const card of shown) {
+      card.stages.forEach((item, index) => {
+        const title = stageTitle(item);
+        if (title !== "Эффект зафиксирован" && !order.has(title)) order.set(title, index);
+      });
+      if (card.handoff.length && !order.has("Передача результатов")) order.set("Передача результатов", card.stages.length - 1.5);
+    }
+    const groups = new Map([...order].sort((a, b) => a[1] - b[1]).map(([title]) => [title, []]));
+    for (const card of shown.sort((a, b) => a.stageOrder - b.stageOrder)) {
+      const title = card.stage || "Стадия не указана";
+      if (!groups.has(title)) groups.set(title, []);
+      groups.get(title).push(card);
+    }
+    board.replaceChildren(...Array.from(groups, ([title, group]) => {
+      const section = element("section");
+      if (!group.length) section.className = "empty-stage";
+      section.append(element("h2", `${title} · ${group.length}`), ...group.map(card => cardSummary(card, true, today)));
+      return section;
+    }));
+    if (!shown.length) board.append(element("p", "Нет проектов в работе для этого выбора."));
+  }
+  $("issues").hidden = !issues.length;
+  $("issue-list").replaceChildren(...issues.map(issue => element("li", issue)));
+}
+
+function selectScope(nextScope) {
+  scope = nextScope;
+  render();
+}
+
+async function readRules(directory) {
+  try {
+    const handle = await directory.getFileHandle("dashboard-rules.json");
+    return { rules: parseRules(await (await handle.getFile()).text()) };
+  } catch (error) {
+    if (error.name !== "NotFoundError") return { rules: null, issue: error.message };
+    return { rules: null };
+  }
+}
+
+async function loadProject(directory, folder) {
+  if (demo) return { raw: memory.get(folder) };
+  const projects = await directory.getDirectoryHandle("projects");
+  const projectFolder = await projects.getDirectoryHandle(folder);
+  const handle = await projectFolder.getFileHandle("README.md");
+  return { handle, raw: await (await handle.getFile()).text() };
+}
+
+async function scan() {
+  if ((!root && !demo) || reading || saving) return;
+  const active = root;
+  reading = true;
+  refresh.disabled = true;
+  try {
+    if (!demo && await active.queryPermission({ mode: "read" }) !== "granted") {
+      if (active !== root) return;
+      resume.hidden = false;
+      snapshot = { cards: [], issues: [], rules: null };
+      lastView = "";
+      render();
+      status(`Разрешите чтение папки «${active.name}».`);
+      return;
+    }
+    const result = demo
+      ? { cards: [...memory].map(([name, raw]) => parseCard(raw, name)), issues: [] }
+      : await readCards(active);
+    const { rules, issue } = demo ? { rules: demo.rules } : await readRules(active);
+    if (active !== root) return;
+    if (issue) result.issues.push(issue);
+    snapshot = { ...result, rules };
+    const view = JSON.stringify([todayKey(), snapshot]);
+    if (view !== lastView) {
+      render();
+      lastView = view;
+    }
+    resume.hidden = true;
+    const issues = result.issues.length ? ` · Нужна настройка: ${result.issues.length}` : "";
+    status(demo ? "Учебные данные. Изменения действуют до перезагрузки страницы."
+      : `Папка «${active.name}» · Проектов: ${result.cards.length}${issues}`);
+  } catch (error) {
+    if (active !== root) return;
+    const canResume = error.name === "NotAllowedError" || error.name === "SecurityError";
+    resume.hidden = !canResume;
+    snapshot = { cards: [], issues: [], rules: null };
+    lastView = "";
+    render();
+    status(error.name === "NotFoundError" || error.name === "TypeMismatchError"
+      ? "Папка projects/ не найдена. Подключите корневую папку штаба."
+      : canResume ? "Нужно снова разрешить чтение папки." : `Ошибка чтения · ${error.message}`);
+  } finally {
+    reading = false;
+    refresh.disabled = false;
+    if (active !== root) void scan();
+  }
+}
+
+function appendChecks(title, items, enabled) {
+  if (!items.length) return;
+  const section = element("fieldset");
+  const complete = items.filter(item => item.done).length;
+  section.append(element("legend", `${title} · ${complete} из ${items.length}`));
+  for (const item of items) {
+    const checkbox = element("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = item.done;
+    checkbox.disabled = !enabled.has(item.line);
+    if (!checkbox.disabled) checkbox.dataset.line = item.line;
+    checkbox.addEventListener("change", () => selectCheck(checkbox, item));
+    const label = element("label");
+    label.append(checkbox, element("span", item.text));
+    section.append(label);
+  }
+  checklist.append(section);
+}
+
+async function openProject(folder) {
+  const active = root;
+  try {
+    const selected = await loadProject(active, folder);
+    if (root !== active) return;
+    const card = parseCard(selected.raw, folder);
+    project = { ...selected, card, folder, root: active, rules: snapshot.rules };
+    pending = null;
+    form.reset();
+    $("pending").hidden = true;
+    $("project-title").textContent = card.name;
+    $("project-path").textContent = `projects/${folder}/README.md`;
+    $("project-message").textContent = snapshot.rules ? ""
+      : "Для смены колонки настройте dashboard-rules.json по правилам вашего штаба.";
+    const state = $("project-state");
+    state.replaceChildren();
+    labeled(state, "Статус", labels[card.status]);
+    labeled(state, "На очереди", card.stage);
+    labeled(state, "Следующий шаг", card.next);
+    labeled(state, "За кем шаг", card.owner);
+    checklist.replaceChildren();
+    const enabled = new Set(allowedItems(card, project.rules).map(item => item.line));
+    appendChecks("Стадии проекта", card.stages, enabled);
+    appendChecks("Передача результатов", card.handoff, enabled);
+    appendChecks("Чек-лист действий", card.checklist, enabled);
+    if (!dialog.open) dialog.showModal();
+  } catch (error) {
+    $("feedback").textContent = `Не удалось открыть карточку · ${error.message}`;
+  }
+}
+
+function selectCheck(checkbox, item) {
+  if (saving || !project) return;
+  pending = checkbox.checked ? item : null;
+  for (const input of checklist.querySelectorAll("input[data-line]")) input.checked = input === checkbox && !!pending;
+  $("pending").hidden = !pending;
+  $("project-message").textContent = "";
+  if (!pending) return;
+  const preview = planCheck(project.raw, project.folder, pending.line, { rules: project.rules, preview: true });
+  $("evidence").value = "";
+  $("evidence").required = preview.requiresEvidence;
+  $("next-fields").hidden = !preview.actionChanged;
+  $("next-step").value = preview.card.next || "";
+  $("next-owner").value = preview.card.owner || "";
+  $("effect-field").hidden = !preview.needsEffectDate;
+  $("effect-date").required = preview.needsEffectDate;
+  $("effect-date").value = project.card.effectDate || "";
+  const result = preview.card.status === project.card.status
+    ? labels[project.card.status] : `${labels[project.card.status]} → ${labels[preview.card.status]}`;
+  $("preview").textContent = [result, preview.card.stage].filter(Boolean).join(" · ");
+}
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  if (saving || !project || !pending) return;
+  const selected = project;
+  saving = true;
+  $("save").disabled = true;
+  $("project-message").textContent = "";
+  try {
+    const change = planCheck(selected.raw, selected.folder, pending.line, {
+      rules: selected.rules, evidence: $("evidence").value,
+      next: $("next-step").value, owner: $("next-owner").value, effectDate: $("effect-date").value,
+    });
+    if (demo) {
+      memory.set(selected.folder, change.text);
+    } else {
+      if (selected.root !== root) throw Error("Папка изменилась. Откройте карточку заново.");
+      if (await selected.handle.requestPermission({ mode: "readwrite" }) !== "granted") {
+        throw Error("Chrome не разрешил запись в карточку");
+      }
+      const current = await loadProject(root, selected.folder);
+      const { rules } = await readRules(root);
+      if (current.raw !== selected.raw || JSON.stringify(rules) !== JSON.stringify(selected.rules)) {
+        throw Error("Карточка или правила изменились. Закройте и откройте проект заново.");
+      }
+      const writer = await current.handle.createWritable();
+      await writer.write(change.text);
+      await writer.close();
+    }
+    if (change.card.status !== selected.card.status) scope = "overview";
+    $("feedback").textContent = `«${change.card.name}» · ${labels[change.card.status]} · ${demo ? "демо обновлено" : "карточка сохранена"}`;
+    dialog.close();
+  } catch (error) {
+    $("project-message").textContent = error.message;
+  } finally {
+    saving = false;
+    $("save").disabled = false;
+    await scan();
+  }
 });
+
+function storedRoot(value) {
+  return new Promise((resolve, reject) => {
+    const open = indexedDB.open("research-hq", 1);
+    open.onupgradeneeded = () => open.result.createObjectStore("settings");
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const db = open.result;
+      const writing = value !== undefined;
+      const tx = db.transaction("settings", writing ? "readwrite" : "readonly");
+      const store = tx.objectStore("settings");
+      const request = writing ? store.put(value, "root") : store.get("root");
+      tx.oncomplete = () => { db.close(); resolve(request.result); };
+      tx.onabort = () => { db.close(); reject(tx.error); };
+    };
+  });
+}
+
+connect.addEventListener("click", async () => {
+  if (!window.showDirectoryPicker) {
+    status("Откройте дашборд из расширения в Google Chrome.");
+    return;
+  }
+  try {
+    root = await window.showDirectoryPicker({ id: "research-hq", mode: "read" });
+    try { await storedRoot(root); } catch { /* Папка доступна в этой вкладке. */ }
+    await scan();
+  } catch (error) {
+    if (error.name !== "AbortError") status(`Не удалось подключить папку · ${error.message}`);
+  }
+});
+resume.addEventListener("click", async () => {
+  if (!root) return;
+  try {
+    await root.requestPermission({ mode: "read" });
+    await scan();
+  } catch (error) {
+    status(`Не удалось разрешить чтение · ${error.message}`);
+  }
+});
+refresh.addEventListener("click", scan);
+$("overview").addEventListener("click", () => selectScope("overview"));
+$("active").addEventListener("click", () => selectScope("active"));
+$("close-project").addEventListener("click", () => { if (!saving) dialog.close(); });
+dialog.addEventListener("cancel", event => { if (saving) event.preventDefault(); });
+filter.addEventListener("change", render);
+
+if (demo) {
+  connect.hidden = true;
+  refresh.hidden = true;
+  await scan();
+} else {
+  window.addEventListener("focus", scan);
+  setInterval(scan, 5000);
+  render();
+  try {
+    root = await storedRoot();
+    await scan();
+  } catch {
+    status("Выберите папку, в которой находится projects/.");
+  }
+}
 </script>
 </body>
 </html>

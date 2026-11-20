@@ -10,22 +10,47 @@
 <body>
   <header>
     <h1>Штаб исследователя</h1>
-    <p class="intro">Дашборд читает карточки из выбранной папки. Пока вкладка открыта, обновляет их автоматически.</p>
+    <p class="intro">Откройте обзор или перейдите к текущим стадиям проектов.</p>
     <div class="actions">
       <button type="button" id="connect">Подключить папку штаба</button>
       <button type="button" id="resume" hidden>Разрешить чтение</button>
       <button type="button" id="refresh" disabled>Обновить</button>
     </div>
     <p id="status" role="status">Выберите папку, в которой находится projects/.</p>
+    <div class="actions views">
+      <button type="button" id="overview" aria-pressed="true">Обзор</button>
+      <button type="button" id="active" aria-pressed="false">Мой Ongoing</button>
+      <label id="filter" hidden>Исследователь <select id="researcher"><option value="">Все</option></select></label>
+    </div>
   </header>
-  <section id="reminders" aria-labelledby="reminder-title" hidden>
-    <h2 id="reminder-title">Напоминания</h2>
-    <ul id="reminder-list"></ul>
-  </section>
-  <main id="board" aria-label="Проекты по статусам"></main>
+  <p id="feedback" role="status"></p>
+  <main id="board" aria-label="Проекты"></main>
   <details id="issues" hidden>
-    <summary>Карточки, которые нужно настроить</summary>
+    <summary>Что нужно настроить</summary>
     <ul id="issue-list"></ul>
   </details>
+  <dialog id="project" aria-labelledby="project-title">
+    <header class="project-head">
+      <h2 id="project-title"></h2>
+      <button type="button" id="close-project">Закрыть</button>
+    </header>
+    <p id="project-path" class="path"></p>
+    <div id="project-state"></div>
+    <form id="project-form">
+      <div id="project-checks"></div>
+      <section id="pending" aria-label="Подтвердить изменение" hidden>
+        <h3>Проверьте изменение перед сохранением</h3>
+        <p id="preview" role="status"></p>
+        <label>Чем подтверждено <input id="evidence" maxlength="400" placeholder="Например, дата и ссылка на сообщение"></label>
+        <div id="next-fields">
+          <label>Следующий шаг <input id="next-step" maxlength="240"></label>
+          <label>За кем шаг <input id="next-owner" maxlength="120"></label>
+        </div>
+        <label id="effect-field" hidden>Дата контроля эффекта <input id="effect-date" type="date"></label>
+        <button type="submit" id="save">Сохранить в карточке</button>
+      </section>
+      <p id="project-message" role="status"></p>
+    </form>
+  </dialog>
 </body>
 </html>

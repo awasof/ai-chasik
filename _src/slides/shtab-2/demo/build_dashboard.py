@@ -1,120 +1,34 @@
-from datetime import date
-from html import escape
+"""Собирает самодостаточный HTML-прототип из локальных карточек штаба."""
+import json
 from pathlib import Path
 import re
 
 
 ROOT = Path(__file__).resolve().parent
-COLUMNS = (
-    ("todo", "To do"),
-    ("ongoing", "Ongoing"),
-    ("done", "Done — контроль эффекта"),
-)
-
-
-def task_section(body, title):
-    _, _, section = body.partition(f"\n## {title}\n")
-    section = section.split("\n## ", 1)[0]
-    return [(mark.lower() == "x", label) for mark, label in
-            re.findall(r"(?m)^- \[([ xX])\] (.+)$", section)]
-
-
-def read_card(path):
-    """Читаем шапку демо-карточки: по одному полю «ключ: значение» на строку."""
-    opening, _, rest = path.read_text(encoding="utf-8").partition("\n")
-    header, end, body = rest.partition("\n---\n")
-    if opening != "---" or not end:
-        raise ValueError(f"В {path} отсутствует шапка карточки")
-    fields = {}
-    for line in header.splitlines():
-        if not line.strip():
-            continue
-        key, sep, value = line.partition(":")
-        if not sep or not key.strip():
-            raise ValueError(f"Строка шапки в {path}: {line}")
-        fields[key.strip()] = value.strip().strip("\"'")
-    if not fields.get("имя") or fields.get("status") not in dict(COLUMNS):
-        raise ValueError(f"В {path} проверьте поля «имя» и «status»")
-    stages = task_section(body, "Стадии проекта")
-    if stages:
-        pending = next((label for done, label in stages if not done), "")
-        label, *notes = pending.split(" · ")
-        next_stage = re.sub(r"^\d+\.\s+", "", label)
-        handoff = task_section(body, "Передача результатов")
-        if fields["status"] == "ongoing" and next_stage in ("", "Эффект зафиксирован") and any(not done for done, _ in handoff):
-            next_stage = "Передача результатов"
-        else:
-            for note in notes:
-                key, _, value = note.partition(": ")
-                if key == "Ответственный":
-                    fields["ответственный_за_стадию"] = value
-                elif key == "Подтверждает":
-                    fields["подтверждает_стадию"] = value
-        fields["стадия"] = next_stage
-        fields["прогресс_стадий"] = f"{sum(done for done, _ in stages)} из {len(stages)}"
-        if any(done and re.match(r"^(?:\d+\.\s+)?Эффект зафиксирован\b", label, re.I) for done, label in stages):
-            fields["эффект"] = "зафиксирован"
-    return fields
-
-
-def render_card(path, fields):
-    name = escape(fields["имя"])
-    href = escape(path.relative_to(ROOT).as_posix())
-    content = []
-    for key, label in (("rp", "Номер"), ("стадия", "На очереди"),
-                       ("ответственный_за_стадию", "Ведёт стадию"), ("подтверждает_стадию", "Подтверждает"),
-                       ("следующий_шаг", "Следующий шаг"), ("за_кем_шаг", "За кем шаг")):
-        if fields.get(key) and not (key == "стадия" and fields.get("эффект") == "зафиксирован"):
-            content.append(f"<p><b>{label}</b> {escape(fields[key])}</p>")
-    if fields.get("прогресс_стадий"):
-        content.append(f'<p class="stage-progress"><b>Стадии проекта</b> {escape(fields["прогресс_стадий"])}</p>')
-    for key, label in (("дедлайн", "Срок"), ("проверка_эффекта", "Проверка эффекта")):
-        if value := fields.get(key):
-            due = date.fromisoformat(value)
-            style = ' class="late"' if due < date.today() else ""
-            content.append(f"<p{style}><b>{label}</b> {due:%d.%m.%Y}</p>")
-    if fields.get("эффект") == "зафиксирован":
-        content.append("<p><b>Эффект зафиксирован</b></p>")
-    return f'<article><h3><a href="{href}">{name}</a></h3>{"".join(content)}</article>'
+UI = ROOT / "chrome-extension"
 
 
 def main():
-    cards = [(path, read_card(path)) for path in sorted(ROOT.glob("projects/*/README.md"))]
-    sections = []
-    for status, label in COLUMNS:
-        items = [render_card(path, fields) for path, fields in cards if fields["status"] == status]
-        sections.append(f"<section><h2>{label}</h2>{''.join(items)}</section>")
-
-    document = """<!doctype html>
-<html lang="ru">
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Дашборд штаба — учебное демо</title>
-<style>
-  * { box-sizing: border-box; }
-  body { margin: 0 auto; max-width: 76rem; padding: clamp(1rem, 4vw, 3rem);
-         font: 16px/1.5 system-ui, sans-serif; color: #1d302a; background: #f3f6f4; }
-  h1 { margin: 0; font-size: clamp(1.8rem, 4vw, 3rem); letter-spacing: -.035em; }
-  header { margin-bottom: 2rem; }
-  header p { color: #4b5c54; }
-  main { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
-  section { padding: .95rem; border-top: 3px solid #356951; border-radius: .35rem;
-            background: #e5ede7; min-width: 0; }
-  h2 { margin: 0 0 .8rem; font-size: 1.1rem; }
-  article { margin: .65rem 0 0; padding: .85rem; background: white; border: 1px solid #cad8cf;
-            border-radius: .35rem; overflow-wrap: anywhere; }
-  h3 { margin: 0 0 .55rem; font-size: 1rem; }
-  article p { margin: .35rem 0 0; font-size: .9rem; }
-  article b { color: #354a40; }
-  a { color: #1c5740; text-underline-offset: .15em; }
-  .late, .late b { color: #a32020; }
-  @media (max-width: 750px) { main { grid-template-columns: 1fr; } }
-</style>
-<body>
-<header><h1>Штаб исследователя</h1><p>Учебный дашборд с вымышленными проектами</p></header>
-<main>""" + "\n".join(sections) + "</main>\n</body>\n</html>\n"
-    (ROOT / "dashboard.html").write_text(document, encoding="utf-8")
-    print(f"Собран dashboard.html, проектов: {len(cards)}")
+    projects = ROOT / "projects"
+    cards = {
+        card.parent.name: card.read_text(encoding="utf-8")
+        for card in sorted(projects.glob("*/README.md"))
+        if not card.parent.name.startswith((".", "_"))
+    }
+    rules_json = ROOT / "dashboard-rules.json"
+    rules = json.loads(rules_json.read_text(encoding="utf-8")) if rules_json.is_file() else None
+    data = json.dumps({"cards": cards, "rules": rules}, ensure_ascii=False).replace("<", "\\u003c")
+    css = (UI / "dashboard.css").read_text(encoding="utf-8")
+    model = re.sub(r"(?m)^export ", "", (UI / "cards.mjs").read_text(encoding="utf-8"))
+    ui = (UI / "dashboard.mjs").read_text(encoding="utf-8").split("\n", 1)[1]
+    html = (UI / "dashboard.html").read_text(encoding="utf-8")
+    html = html.replace('  <link rel="stylesheet" href="dashboard.css">', f"  <style>\n{css}  </style>")
+    html = html.replace('  <script type="module" src="dashboard.mjs"></script>\n', "")
+    html = html.replace("<title>", '<meta name="robots" content="noindex, nofollow">\n  <title>', 1)
+    script = f"<script type=\"module\">\nwindow.SHTAB_DEMO = {data};\n{model}\n{ui}</script>"
+    html = html.replace("</body>", f"{script}\n</body>", 1)
+    (ROOT / "dashboard.html").write_text(html, encoding="utf-8")
+    print(f"Собран HTML-прототип, проектов: {len(cards)}")
 
 
 if __name__ == "__main__":
