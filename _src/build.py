@@ -284,10 +284,17 @@ def page_home(chs):
 def page_chasik(ch, chs):
     base = "../"
     words, mins = reading_minutes(ch)
+    def topic_material(topic):
+        material = topic.get("material")
+        if not material:
+            return ""
+        return (f' <a href="{e(material["url"])}" target="_blank" rel="noopener noreferrer">'
+                f'{e(material["label"])}</a>')
+
     topics = "".join(
         f'<li id="topic-{i}" data-topic="{i}"><span class="n" aria-hidden="true">{i}</span>'
         f'<div class="t-head"><h3>{e(t["title"])}</h3>{tc(ch, t["t"])}</div>'
-        f'<p class="t-text">{e(t["text"])}</p></li>'
+        f'<p class="t-text">{e(t["text"])}{topic_material(t)}</p></li>'
         for i, t in enumerate(ch["topics"], 1))
     tips = []
     for i, t in enumerate(ch["tips"], 1):
