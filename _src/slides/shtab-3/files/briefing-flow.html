@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow"><title>От брифа до паспорта проекта</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f4ee;
+      --surface: #fffefa;
+      --ink: #182c26;
+      --muted: #4d6259;
+      --line: #cbd8cb;
+      --green: #1b5845;
+      --light-green: #e8f2e8;
+      --warm: #f8f0df;
+      --brown: #69491f;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-padding-top: 1rem; }
+    body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 system-ui, -apple-system, sans-serif; }
+    a { color: var(--green); text-underline-offset: .17em; }
+    a:focus-visible, button:focus-visible, textarea:focus-visible { outline: 2px solid #98400f; outline-offset: 3px; }
+    h1, h2, h3, p { margin: 0; }
+    main { max-width: 1160px; padding: 38px 30px 44px; margin: auto; }
+    .hero { padding: clamp(21px, 4.8vw, 52px); border-radius: 24px; background: #133c30; color: #fafbf4; }
+    h1 { max-width: 18ch; font-size: clamp(2.2rem, 6.6vw, 4.6rem); line-height: 1.04; letter-spacing: -.043em; text-wrap: balance; }
+    .hero p { margin-top: 14px; max-width: 66ch; color: #e4f0e6; }
+    .hero p strong { color: #fff; }
+    .nav { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 20px; }
+    .nav a { border: 1px solid #719585; border-radius: 999px; padding: 5px 12px; color: #fff; text-decoration: none; }
+    .nav a:hover { background: #245a49; }
+    .help { margin: 15px 0 30px; color: var(--muted); font-size: .875rem; }
+    .phase + .phase { margin-top: 34px; }
+    h2 { font-size: clamp(1.35rem, 3vw, 1.9rem); letter-spacing: -.02em; margin-bottom: 13px; }
+    .steps { display: grid; gap: 14px; margin-left: 19px; border-left: 2px solid var(--line); padding-left: 25px; }
+    .step { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 17px 18px 18px; }
+    .step::before { position: absolute; top: 22px; left: -32px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--paper); background: var(--green); content: ""; }
+    .step-head { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 7px 14px; margin-bottom: 12px; }
+    .step-head h3 { font-size: clamp(1.05rem, 2vw, 1.22rem); line-height: 1.35; }
+    .step-number { color: var(--green); margin-right: .42em; font-variant-numeric: tabular-nums; }
+    .step-comment { padding: 4px 9px; border-radius: 7px; border: 1px solid var(--line); color: var(--green); background: transparent; font: inherit; font-size: .82rem; cursor: pointer; }
+    .step-comment:hover { background: var(--light-green); }
+    .io { display: grid; grid-template-columns: 1fr 1.4fr 1.12fr; gap: 9px; margin: 0; }
+    .io > div { min-width: 0; padding: 9px 11px; border-radius: 9px; }
+    .io > div:first-child { background: #f2f3ec; }
+    .io > div:last-child { background: var(--light-green); }
+    dt { margin-bottom: 3px; color: var(--green); font-weight: 680; font-size: .83rem; }
+    dd { margin: 0; font-size: .94rem; }
+    .conditional { border-style: dashed; background: #fbfaf3; }
+    .conditional::before { background: var(--paper); border-color: var(--green); }
+    .route { margin-top: 10px; padding: 8px 11px; border-left: 3px solid #aa803e; border-radius: 4px 8px 8px 4px; background: var(--warm); color: var(--brown); font-size: .9rem; }
+    .sources { margin-top: 32px; padding-top: 15px; border-top: 1px solid var(--line); font-size: .875rem; }
+    .sources a { display: inline-block; margin: 3px 12px 0 0; }
+    body .cm-bar { flex-wrap: wrap; justify-content: flex-end; max-width: calc(100vw - 24px); }
+    body .cm-toast { max-width: calc(100vw - 24px); overflow-wrap: anywhere; }
+    @media (max-width: 720px) {
+      main { padding: 16px 13px 30px; }
+      .hero { border-radius: 16px; }
+      .steps { margin-left: 6px; padding-left: 15px; }
+      .step { padding: 12px; }
+      .step::before { left: -22px; top: 16px; }
+      .io { grid-template-columns: minmax(0, 1fr); gap: 5px; }
+      .io > div { padding: 7px 9px; }
+      body .cm-bar { bottom: 9px; right: 9px; gap: 5px; }
+      body .cm-bar button { padding: 7px 8px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="hero">
+    <h1>От брифа до паспорта проекта</h1>
+    <p>Процесс запускается в чате проекта фразой <strong>«Подготовь меня к брифингу с клиентом»</strong>. Если номер РП уже известен, достаточно короткой фразы «Подготовь меня к брифингу».</p>
+    <nav class="nav" aria-label="Этапы процесса">
+      <a href="#before">До брифинга</a><a href="#meeting">Встреча и итоги</a><a href="#field">Подготовка к полю</a>
+    </nav>
+  </header>
+  
+
+  <section class="phase" id="before" aria-labelledby="before-title">
+    <h2 id="before-title">До брифинга</h2>
+    <div class="steps">
+      <article class="step" id="start">
+        <div class="step-head"><h3 id="start-title"><span class="step-number">00</span> Определить проект</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Фраза запуска и номер РП или контекст текущего чата.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Находим карточку проекта. Если номер неясен, спрашиваем его. При повторном запуске сначала проверяем, какие документы уже готовы.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Выбран проект и понятен ближайший незавершённый шаг.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step" id="brief">
+        <div class="step-head"><h3 id="brief-title"><span class="step-number">01</span> Найти и перенести бриф</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Карточка РП, бриф заказчика и приложения. Бриф может прийти фото, сканом, таблицей Excel или текстом.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Находим актуальную версию и сверяем перенос. Сохраняем названия, порядок и формулировки полей, ссылки и пропуски. Если копия уже сверена, берём её.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Рабочий бриф в Markdown и вкладка «Бриф» в HTML. У обеих версий есть дата актуальности и ссылка на оригинал.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step" id="framing">
+        <div class="step-head"><h3 id="framing-title"><span class="step-number">02</span> Разобрать задачу</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Сверенный бриф и связанные материалы проекта.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Связываем бизнес-цель с выбором команды и тем, что для него нужно узнать. Проверяем, чей опыт важен, кого можно набрать и какие методы подходят.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Первая постановка задачи, исследовательские вопросы, аудитория, предварительные варианты метода и пробелы в данных.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step conditional" id="prior">
+        <div class="step-head"><h3 id="prior-title"><span class="step-number">02а</span> Сверить прошлые исследования, если они есть</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Актуальный бриф и отчёты или материалы тестов по той же задаче.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Сопоставляем каждую находку с полем брифа и отмечаем, вошла ли она целиком, частично или осталась за рамками.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Таблица с цитатой и источником, краткой находкой, полем и цитатой из брифа, статусом совпадения. В подготовку попадают находки, которые могут повлиять на открытый выбор команды.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step" id="review">
+        <div class="step-head"><h3 id="review-title"><span class="step-number">03</span> Сверить постановку с исследователем</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Рабочая постановка, результаты сверки прошлых работ и вопросы, на которые материалы пока не отвечают.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Показываем исследователю, как поняли задачу, и спрашиваем о существенных пробелах. Учитываем ответы и правки. Суммарно задаём до 20 необходимых уточнений на документ.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Уточнённая постановка и список вопросов, которые стоит обсудить с заказчиком.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step" id="prepare">
+        <div class="step-head"><h3 id="prepare-title"><span class="step-number">04</span> Подготовить встречу и черновик паспорта</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Уточнённая постановка, материалы проекта и вопросы, оставшиеся к команде.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Пишем резюме, риски, предварительные варианты метода и вступление. Привязываем вопросы к полям брифа. Параллельно записываем в паспорт решение, вопросы, аудиторию и ограничения.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Два Markdown-документа и две вкладки HTML — «Подготовка к брифингу» с отметками и полями ответов и «Паспорт» с черновиком и датой актуальности.</p></dd></div>
+        </dl>
+        <p class="route">↶ Если новые материалы или правки меняют цель, границы, вопросы или метод, <a href="#review">возвращаемся к сверке с исследователем</a> и обновляем черновики.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="phase" id="meeting" aria-labelledby="meeting-title">
+    <h2 id="meeting-title">Встреча и итоги</h2>
+    <div class="steps">
+      <article class="step" id="briefing">
+        <div class="step-head"><h3 id="briefing-title"><span class="step-number">05</span> Провести брифинг</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Подготовка к встрече и вопросы к заказчику.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Исследователь сверяет понимание задачи с командой, задаёт вопросы и записывает ответы или договорённости.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Расшифровка или запись итогов, ответы и заметки встречи.</p></dd></div>
+        </dl>
+      </article>
+
+      <article class="step" id="agreements">
+        <div class="step-head"><h3 id="agreements-title"><span class="step-number">06</span> Собрать договорённости и письмо</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Расшифровка или запись итогов, заметки и ответы из вкладки подготовки.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Сверяем ответы с итогами встречи и фиксируем согласованное, следующие шаги и открытые вопросы. Передаём текст исследователю на согласование.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Markdown-документ и вкладка «Договорённости», черновик письма команде.</p></dd></div>
+        </dl>
+        <p class="route"></p>
+      </article>
+
+      <article class="step" id="passport">
+        <div class="step-head"><h3 id="passport-title"><span class="step-number">07</span> Обновить паспорт по итогам встречи</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Черновик паспорта, подтверждённые ответы и договорённости.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Определяем, какие поля затрагивает каждый ответ, и обновляем их. По существенным пробелам возвращаемся к исследователю.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Актуальный паспорт в Markdown и HTML. У изменений есть источники, у версии — дата актуальности, у открытых вопросов — явная отметка.</p></dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  <section class="phase" id="field" aria-labelledby="field-title">
+    <h2 id="field-title">Подготовка к полю</h2>
+    <div class="steps">
+      <article class="step conditional" id="design">
+        <div class="step-head"><h3 id="design-title"><span class="step-number">08</span> Уточнить дизайн исследования</h3></div>
+        <dl class="io">
+          <div><dt>На входе</dt><dd><p>Актуальный паспорт и согласованный переход к подготовке поля.</p></dd></div>
+          <div><dt>Что делаем</dt><dd><p>Обосновываем метод и уточняем сегменты, выборку, рекрут, процедуру, измерения и план анализа. Готовим нужные для поля инструменты.</p></dd></div>
+          <div><dt>На выходе</dt><dd><p>Раздел «Дизайн исследования» внутри паспорта со ссылками на отдельные рабочие версии анкеты, гайда интервью или скринера.</p></dd></div>
+        </dl>
+      </article>
+    </div>
+  </section>
+
+  </main></body></html>
